@@ -1,0 +1,15 @@
+{
+  "name": "knimation",
+  "version": "0.0.2",
+  "description": "you can make easily animation with this",
+  "main": "knimation.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kstost/knimation.git"
+  },
+  "keywords": [
+    "animation"
+  ],
+  "author": "Kim seung tae <monogatree@gmail.com>",
+  "license": "MIT"
+}

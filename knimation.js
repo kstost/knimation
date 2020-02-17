@@ -234,6 +234,6 @@ Knimation.Easing = {
     // acceleration until halfway, then deceleration 
     easeInOutQuint: t => t < .5 ? 16 * t * t * t * t * t : 1 + 16 * (--t) * t * t * t * t
 };
-if (module) {
+if (typeof module === "object" && typeof module.exports === "object") {
     module.exports = Knimation;
 }

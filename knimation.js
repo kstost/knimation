@@ -126,74 +126,78 @@ Knimation.animate = function (dom, schedule) {
     (async () => {
         while (dts.alive) {
             for (let i = 0; i < schedule.length; i++) {
-                let task = schedule[i];
-                let type = typeof task;
-                await new Promise((resolve, reject) => {
-                    if (dts.alive) {
-                        if (type === 'function') {
-                            task(resolve, reject);
-                        }
-                        if (type === 'object') {
-                            let end_count = 0;
-                            let style_keys = Object.keys(task.style);
-                            let ease_function = Knimation.Easing[task.ease ? task.ease : 'linear'];
-                            function endCall() {
-                                end_count++;
-                                return style_keys.length === end_count;
-                            }
-                            for (let j = 0; j < style_keys.length; j++) {
-                                let key = style_keys[j];
-                                let val = task.style[key];
-                                let start, end, umsu;
-                                if (typeof val === 'object') {
-                                    start = val[0];
-                                    end = val[1];
-                                } else {
-                                    start = Number(dom.style[key]);
-                                    if (isNaN(start)) {
-                                        start = Number(dom.style[key].split('p')[0]);
-                                    }
-                                    end = start + val;
+                let fwvs = (typeof schedule[i]) === 'boolean' && schedule[i] === true;
+                if (!fwvs) {
+                    let task = schedule[i];
+                    let type = typeof task;
+                    await new Promise((resolve, reject) => {
+                        if (dts.alive) {
+                            if (type === 'function') { task(resolve, reject); }
+                            if (type === 'object') {
+                                let end_count = 0;
+                                let style_keys = Object.keys(task.style);
+                                let ease_function = Knimation.Easing[task.ease ? task.ease : 'linear'];
+                                function endCall() {
+                                    end_count++;
+                                    return style_keys.length === end_count;
                                 }
-                                umsu = start < end;
-                                let ani_proc = new Knimation((delta_time, spent_time, spent_ratio, object_pointer) => {
-                                    if (dts.alive) {
-                                        let ease_ratio = ease_function ? ease_function(spent_ratio) : spent_ratio;
-                                        let calc = start + ((end * ease_ratio) * (!umsu ? -1 : 1));
-                                        dom.style[key] = calc + unit(key);
-                                        if (spent_ratio === 1) {
-                                            if (dts.ani_list) {
-                                                let nvs = -1;
-                                                for (let iv = 0; iv < dts.ani_list.length; iv++) {
-                                                    if (dts.ani_list[iv] === ani_proc) {
-                                                        nvs = iv;
-                                                        break;
+                                for (let j = 0; j < style_keys.length; j++) {
+                                    let key = style_keys[j];
+                                    let val = task.style[key];
+                                    let start, end, umsu;
+                                    if (typeof val === 'object') {
+                                        start = val[0];
+                                        end = val[1];
+                                    } else {
+                                        start = Number(dom.style[key]);
+                                        if (isNaN(start)) {
+                                            start = Number(dom.style[key].split('p')[0]);
+                                        }
+                                        end = start + val;
+                                    }
+                                    umsu = start < end;
+                                    let ddf = Math.abs(end - start);
+                                    let ani_proc = new Knimation((delta_time, spent_time, spent_ratio, object_pointer) => {
+                                        if (dts.alive) {
+                                            let ease_ratio = ease_function ? ease_function(spent_ratio) : spent_ratio;
+                                            let calc = start + ((ddf * ease_ratio) * (!umsu ? -1 : 1));
+                                            let jdv = calc + unit(key);
+                                            dom.style[key] = jdv;
+                                            if (spent_ratio === 1) {
+                                                if (dts.ani_list) {
+                                                    let nvs = -1;
+                                                    for (let iv = 0; iv < dts.ani_list.length; iv++) {
+                                                        if (dts.ani_list[iv] === ani_proc) {
+                                                            nvs = iv;
+                                                            break;
+                                                        }
+                                                    }
+                                                    if (nvs > -1) {
+                                                        dts.ani_list.splice(nvs, 1);
                                                     }
                                                 }
-                                                if (nvs > -1) {
-                                                    dts.ani_list.splice(nvs, 1);
+                                                if (endCall()) {
+                                                    resolve();
                                                 }
                                             }
-                                            if (endCall()) {
-                                                resolve();
+                                        } else {
+                                            if (spent_ratio !== 1) {
+                                                object_pointer.destroy();
                                             }
+                                            resolve();
                                         }
-                                    } else {
-                                        if (spent_ratio !== 1) {
-                                            object_pointer.destroy();
-                                        }
+                                    }, task.duration);
+                                    if (!dts.ani_list) {
+                                        dts.ani_list = [];
                                     }
-                                }, task.duration);
-                                if (!dts.ani_list) {
-                                    dts.ani_list = [];
+                                    dts.ani_list.push(ani_proc);
                                 }
-                                dts.ani_list.push(ani_proc);
                             }
+                        } else {
+                            resolve();
                         }
-                    } else {
-                        resolve();
-                    }
-                });
+                    });
+                }
             }
             if (!inifinite) {
                 break;

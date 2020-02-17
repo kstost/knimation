@@ -121,76 +121,113 @@ Knimation.animate = function (dom, schedule) {
         }
         return '';
     }
+
+    let inifinite = schedule[schedule.length - 1] === true;
     (async () => {
-        for (let i = 0; i < schedule.length; i++) {
-            let task = schedule[i];
-            let type = typeof task;
-            await new Promise((resolve, reject) => {
-                if (dts.alive) {
-                    if (type === 'function') {
-                        task(resolve, reject);
-                    }
-                    if (type === 'object') {
-                        let end_count = 0;
-                        let style_keys = Object.keys(task.style);
-                        function endCall() {
-                            end_count++;
-                            return style_keys.length === end_count;
+        while (dts.alive) {
+            for (let i = 0; i < schedule.length; i++) {
+                let task = schedule[i];
+                let type = typeof task;
+                await new Promise((resolve, reject) => {
+                    if (dts.alive) {
+                        if (type === 'function') {
+                            task(resolve, reject);
                         }
-                        for (let j = 0; j < style_keys.length; j++) {
-                            let key = style_keys[j];
-                            let val = task.style[key];
-                            let start, end, umsu;
-                            if (typeof val === 'object') {
-                                start = val[0];
-                                end = val[1];
-                            } else {
-                                start = Number(dom.style[key]);
-                                if (isNaN(start)) {
-                                    start = Number(dom.style[key].split('p')[0]);
-                                }
-                                end = start + val;
+                        if (type === 'object') {
+                            let end_count = 0;
+                            let style_keys = Object.keys(task.style);
+                            let ease_function = Knimation.Easing[task.ease ? task.ease : 'linear'];
+                            function endCall() {
+                                end_count++;
+                                return style_keys.length === end_count;
                             }
-                            umsu = start < end;
-                            let ani_proc = new Knimation((delta_time, spent_time, spent_ratio, object_pointer) => {
-                                if (dts.alive) {
-                                    let calc = start + ((end * spent_ratio) * (!umsu ? -1 : 1));
-                                    dom.style[key] = calc + unit(key);
-                                    if (spent_ratio === 1) {
-                                        if (dts.ani_list) {
-                                            let nvs = -1;
-                                            for (let iv = 0; iv < dts.ani_list.length; iv++) {
-                                                if (dts.ani_list[iv] === ani_proc) {
-                                                    nvs = iv;
-                                                    break;
+                            for (let j = 0; j < style_keys.length; j++) {
+                                let key = style_keys[j];
+                                let val = task.style[key];
+                                let start, end, umsu;
+                                if (typeof val === 'object') {
+                                    start = val[0];
+                                    end = val[1];
+                                } else {
+                                    start = Number(dom.style[key]);
+                                    if (isNaN(start)) {
+                                        start = Number(dom.style[key].split('p')[0]);
+                                    }
+                                    end = start + val;
+                                }
+                                umsu = start < end;
+                                let ani_proc = new Knimation((delta_time, spent_time, spent_ratio, object_pointer) => {
+                                    if (dts.alive) {
+                                        let ease_ratio = ease_function ? ease_function(spent_ratio) : spent_ratio;
+                                        let calc = start + ((end * ease_ratio) * (!umsu ? -1 : 1));
+                                        dom.style[key] = calc + unit(key);
+                                        if (spent_ratio === 1) {
+                                            if (dts.ani_list) {
+                                                let nvs = -1;
+                                                for (let iv = 0; iv < dts.ani_list.length; iv++) {
+                                                    if (dts.ani_list[iv] === ani_proc) {
+                                                        nvs = iv;
+                                                        break;
+                                                    }
+                                                }
+                                                if (nvs > -1) {
+                                                    dts.ani_list.splice(nvs, 1);
                                                 }
                                             }
-                                            if (nvs > -1) {
-                                                dts.ani_list.splice(nvs, 1);
+                                            if (endCall()) {
+                                                resolve();
                                             }
                                         }
-                                        if (endCall()) {
-                                            resolve();
+                                    } else {
+                                        if (spent_ratio !== 1) {
+                                            object_pointer.destroy();
                                         }
                                     }
-                                } else {
-                                    if (spent_ratio !== 1) {
-                                        object_pointer.destroy();
-                                    }
+                                }, task.duration);
+                                if (!dts.ani_list) {
+                                    dts.ani_list = [];
                                 }
-                            }, task.duration);
-                            if (!dts.ani_list) {
-                                dts.ani_list = [];
+                                dts.ani_list.push(ani_proc);
                             }
-                            dts.ani_list.push(ani_proc);
                         }
+                    } else {
+                        resolve();
                     }
-                } else {
-                    resolve();
-                }
-            });
+                });
+            }
+            if (!inifinite) {
+                break;
+            }
         }
     })();
     return dts;
+};
+Knimation.Easing = {
+    // no easing, no acceleration
+    linear: t => t,
+    // accelerating from zero velocity
+    easeInQuad: t => t * t,
+    // decelerating to zero velocity
+    easeOutQuad: t => t * (2 - t),
+    // acceleration until halfway, then deceleration
+    easeInOutQuad: t => t < .5 ? 2 * t * t : -1 + (4 - 2 * t) * t,
+    // accelerating from zero velocity 
+    easeInCubic: t => t * t * t,
+    // decelerating to zero velocity 
+    easeOutCubic: t => (--t) * t * t + 1,
+    // acceleration until halfway, then deceleration 
+    easeInOutCubic: t => t < .5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1,
+    // accelerating from zero velocity 
+    easeInQuart: t => t * t * t * t,
+    // decelerating to zero velocity 
+    easeOutQuart: t => 1 - (--t) * t * t * t,
+    // acceleration until halfway, then deceleration
+    easeInOutQuart: t => t < .5 ? 8 * t * t * t * t : 1 - 8 * (--t) * t * t * t,
+    // accelerating from zero velocity
+    easeInQuint: t => t * t * t * t * t,
+    // decelerating to zero velocity
+    easeOutQuint: t => 1 + (--t) * t * t * t * t,
+    // acceleration until halfway, then deceleration 
+    easeInOutQuint: t => t < .5 ? 16 * t * t * t * t * t : 1 + 16 * (--t) * t * t * t * t
 };
 module.exports = Knimation;

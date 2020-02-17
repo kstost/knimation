@@ -11,7 +11,7 @@ let Knimation = function (cb, duration) {
         pnt.running = false;
         pnt.start();
     } else {
-        Knimation.animate(cb, duration);
+        return Knimation.animate(cb, duration);
     }
 }
 Knimation.prototype.start = function () {

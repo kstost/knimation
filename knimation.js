@@ -76,6 +76,15 @@ Knimation.prototype.run = function () {
     }
     return pnt;
 }
+Knimation.tasks = function () {
+    let fmv = [];
+    fmv.clear = function () {
+        while (fmv.length) {
+            fmv.splice(0, 1)[0].destroy();
+        }
+    }
+    return fmv;
+}
 Knimation.animate = function (dom, schedule) {
     let dts = {
         playing: true,

@@ -148,6 +148,65 @@ Knimation.animate = function (dom, schedule) {
             }
         },
     };
+    function style_attr_destruct(stt) {
+        var rtt = {};
+        var df = stt.match(/([0-9]|[\.]|[\-])+/);
+        if (df) {
+            rtt.val = df[0];
+            let lst = stt.substring(df.index + df[0].length, stt.length);
+            if (lst) {
+                let regs = lst.match(/^[a-z]+/);
+                if (regs) {
+                    rtt.unit = regs[0];
+                }
+            }
+        }
+        if (rtt.val !== undefined) {
+            rtt.val = Number(rtt.val);
+        }
+        return rtt;
+    }
+    if (false) {
+        // console.log(style_attr_destruct("abec(-12.349ee)"));
+
+        // var string = ;
+        // console.log((transform_parse('scale(1.5) translate3d(20px, 5px, 10px) rotateX(20deg) rotateY(10deg) rotateZ(0deg) skew3d(20deg, 10deg) rotateX(-20deg) rotateY(100deg) rotateZ(-30deg)')));
+        // console.log(transform_stringify(transform_parse('scale(1.5) translate3d(20px, 5px, 10px) rotateX(-20deg) rotateY(100deg) rotateZ(-30deg) skew3d(20deg, 10deg)')));
+        console.log((transform_parse('scale(1.5) translate3d(20px, 5px, 10px) rotateX(-20deg) rotateY(100deg) rotateZ(-30deg) skew3d(20deg, 10deg)')));
+
+
+    }
+    function calc_dist(start, end__) {
+        let negative = start < end__;
+        let distance_value = Math.abs(end__ - start);
+        return {
+            start: start,
+            distv: distance_value * (!negative ? -1 : 1),
+        };
+    }
+    function transform_stringify(transform) {
+        let rt = transform;
+        return Object.keys(transform).map(key => {
+            let fe = transform[key].map(dv => { return dv[0] + dv[1]; }).join(', ');
+            return key + '(' + fe + ')';
+        }).join(' ');
+    }
+    function transform_parse(transform) {
+        var properties = transform.split(/\s(?=\S+\(.*?\))/);
+        var lse = {};
+        for (let i = 0; i < properties.length; i++) {
+            let dfew = properties[i].split('(');
+            // console.log(dfew.length >= 2);
+            let nam = dfew[0].trim();
+            let fe = dfew.length >= 2 ? (dfew[1].split(')')[0].split(',').map(a => a.trim()).map(d => {
+                return parseUnit(d);
+            })) : null;
+            if (nam) {
+                lse[nam] = fe;//{ [nam]: fe };
+            }
+        }
+        return lse;
+    }
     function parseUnit(str) {
         var out = [0, '']
         str = String(str)
@@ -155,6 +214,21 @@ Knimation.animate = function (dom, schedule) {
         out[0] = num
         out[1] = str.match(/[\d.\-\+]*\s*(.*)/)[1] || ''
         return out
+    }
+    function common_proc(dts, spent_ratio, object_pointer, resolve, endCall) {
+        if (resolve) {
+            object_pointer.resolve = () => {
+                if (endCall()) { resolve(); }
+            };
+            Knimation.add_proc_to_list(dts, object_pointer);
+        } else {
+            if (!dts.alive || spent_ratio === 1) {
+                Knimation.remove_item(dts, object_pointer);
+                let rsv = object_pointer.resolve;
+                object_pointer.destroy();
+                rsv();
+            }
+        }
     }
     function toPX(str) {
         var PIXELS_PER_INCH = 96
@@ -182,6 +256,35 @@ Knimation.animate = function (dom, schedule) {
         }
         return adfsc;
     }
+    function val_extractor(val, valraw) {
+        let arrty = Array.isArray(val);
+        let uux = '';
+        if (arrty) {
+            uux = val[val.length - 1];
+            uux = (typeof uux === 'string') ? uux : '';
+            if (uux) {
+                val = JSON.parse(JSON.stringify(val));
+                val.splice(val.length - 1, 1);
+            }
+        }
+        if (arrty && val.length === 1) {
+            arrty = false;
+            val = val[0];
+        }
+        let start = arrty ? val[0] :
+            (
+                typeof valraw === 'string' ?
+                    toPX(valraw.trim()) :
+                    (
+                        valraw === undefined ? 0 :
+                            valraw[0][0]
+                    )
+
+            )
+            ;
+        let end__ = arrty ? val[1] : start + val;
+        return { start, end__, uux };
+    }
 
     let inifinite = schedule[schedule.length - 1] === true;
     (async () => {
@@ -196,61 +299,62 @@ Knimation.animate = function (dom, schedule) {
                             if (type === 'function') { task(resolve, reject); }
                             if (type === 'object') {
                                 let end_count = 0;
-                                let style_keys = Object.keys(task.style);
-                                let ease_function = Knimation.Easing[task.ease ? task.ease : 'linear'];
                                 function endCall() {
                                     end_count++;
-                                    return style_keys.length === end_count;
+                                    return style_keys.length + (transform_keys.length ? 1 : 0) === end_count;
                                 }
-                                for (let j = 0; j < style_keys.length; j++) {
-                                    let key = style_keys[j];
-                                    let val = task.style[key];
-                                    let arrty = Array.isArray(val);
-                                    let uux = '';
-                                    if (arrty) {
-                                        uux = val[val.length - 1];
-                                        uux = (typeof uux === 'string') ? uux : '';
-                                        if (uux) {
-                                            val = JSON.parse(JSON.stringify(val));
-                                            val.splice(val.length - 1, 1);
-                                        }
-                                    }
-                                    if (arrty && val.length === 1) {
-                                        arrty = false;
-                                        val = val[0];
-                                    }
-                                    let start = arrty ? val[0] : toPX(dom.style[key].trim());
-                                    let end__ = arrty ? val[1] : start + val;
-                                    let negative = start < end__;
-                                    let transval = (!negative ? -1 : 1);
-                                    let distance_value = Math.abs(end__ - start);
-                                    if (!dts.time_test && performance_test) {
-                                        dts.time_test = [];
-                                    }
+                                let ease_function = Knimation.Easing[task.ease ? task.ease : 'linear'];
+                                let style_keys = task.style ? Object.keys(task.style) : [];
+                                let transform_keys = task.transform ? Object.keys(task.transform) : [];
+                                if (task.transform) {
+                                    let eved = {};
                                     let ani_proc = new Knimation((delta_time, spent_time, spent_ratio, object_pointer) => {
                                         if (dts.alive) {
-                                            let tt_start = dts.time_test && performance.now();
-                                            let ease_ratio = ease_function ? ease_function(spent_ratio) : spent_ratio;
-                                            let calc = start + ((distance_value * ease_ratio) * transval);
-                                            let cccl = Number((calc).toFixed(4));
-                                            dom.style[key] = uux ? cccl + uux : cccl;
-                                            let tt_enddd = dts.time_test && performance.now();
-                                            if (dts.time_test) {
-                                                dts.time_test[dts.time_test.length] = (tt_enddd - tt_start);
+                                            let current_dom_transform = dom.style.transform;
+                                            let cdt_parsed = transform_parse(current_dom_transform);
+                                            for (let j = 0; j < transform_keys.length; j++) {
+                                                let key = transform_keys[j];
+                                                let first = !eved[key];
+                                                eved[key] = !eved[key] ? val_extractor(task.transform[key], cdt_parsed[key]) : eved[key];
+                                                if (first && !eved[key].uux) {
+                                                    if (['translateX', 'translateY', 'translateZ', 'perspective'].includes(key)) {
+                                                        eved[key].uux = 'px';
+                                                    }
+                                                    else if (['skewX', 'skewY', 'rotate', 'rotateX', 'rotateY', 'rotateZ'].includes(key)) {
+                                                        eved[key].uux = 'deg';
+                                                    }
+                                                }
+                                                let distance_value = calc_dist(eved[key].start, eved[key].end__);
+                                                let ease_ratio = ease_function ? ease_function(spent_ratio) : spent_ratio;
+                                                let calc = distance_value.start + distance_value.distv * ease_ratio;
+                                                let cccl = Number((calc).toFixed(4));
+                                                cdt_parsed[key] = [[cccl, eved[key].uux]];
                                             }
+                                            dom.style.transform = transform_stringify(cdt_parsed);
                                         }
-                                        if (!dts.alive || spent_ratio === 1) {
-                                            Knimation.remove_item(dts, ani_proc);
-                                            let rsv = object_pointer.resolve;
-                                            object_pointer.destroy();
-                                            rsv();
-                                        }
+                                        common_proc(dts, spent_ratio, object_pointer);
                                     }, task.duration);
-                                    ani_proc.resolve = () => {
-                                        if (endCall()) { resolve(); }
-                                    };
-                                    Knimation.add_proc_to_list(dts, ani_proc);
+                                    common_proc(dts, null, ani_proc, resolve, endCall);
                                 }
+                                if (task.style) {
+                                    for (let j = 0; j < style_keys.length; j++) {
+                                        let key = style_keys[j];
+                                        let eved = val_extractor(task.style[key], dom.style[key])
+                                        // console.log(eved.start, '|', eved.end__, '|', task.style[key], '|', dom.style[key]);
+                                        let distance_value = calc_dist(eved.start, eved.end__);
+                                        let ani_proc = new Knimation((delta_time, spent_time, spent_ratio, object_pointer) => {
+                                            if (dts.alive) {
+                                                let ease_ratio = ease_function ? ease_function(spent_ratio) : spent_ratio;
+                                                let calc = distance_value.start + distance_value.distv * ease_ratio;
+                                                let cccl = Number((calc).toFixed(4));
+                                                dom.style[key] = eved.uux ? cccl + eved.uux : cccl;
+                                            }
+                                            common_proc(dts, spent_ratio, object_pointer);
+                                        }, task.duration);
+                                        common_proc(dts, null, ani_proc, resolve, endCall);
+                                    }
+                                }
+
                             }
                         } else {
                             resolve();

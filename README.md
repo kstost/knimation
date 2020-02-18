@@ -1,3 +1,5 @@
+## Demo
+[Demo](https://kstost.github.io/knimation/)
 
 ## Install
 

@@ -24,7 +24,7 @@ let ani = Knimation(dom, [
 You can control the animation with those method
 
 ani.pause()
-ani.stop()
+ani.resume()
 ani.destory()
 
 */

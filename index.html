@@ -1,0 +1,192 @@
+<html>
+
+<head>
+    <script src="./knimation.js"></script>
+    <script>
+        window.onload = () => {
+            let examples = [
+                {
+                    id: 'aaa1',
+                    desc: 'dsfasdf',
+                    code: [
+                        { style: { left: [0, 400] }, duration: 5000 },
+                    ]
+                },
+                {
+                    id: 'aaa2',
+                    desc: 'dsfasdf',
+                    code: [
+                        { style: { left: [0, 400], top: [0, 50] }, duration: 5000 },
+                    ]
+                },
+                {
+                    id: 'aaa3',
+                    desc: 'dsfasdf',
+                    code: [
+                        { style: { width: [0, 400], opacity: [1, 0.4] }, duration: 5000 },
+                    ]
+                },
+                {
+                    id: 'aaa4',
+                    desc: 'dsfasdf',
+                    code: [
+                        { style: { left: [0, 400] }, duration: 5000, ease: 'easeInOutQuad' },
+                    ]
+                },
+                {
+                    id: 'aaa5',
+                    desc: 'dsfasdf',
+                    code: [
+                        { style: { left: [0, 400] }, duration: 5000, ease: 'easeInQuad' },
+                        { style: { left: -200 }, duration: 5000 },
+                    ]
+                },
+                {
+                    id: 'aaa6',
+                    desc: 'dsfasdf',
+                    code: [
+                        { style: { left: 100 }, duration: 500, ease: 'easeInOutQuad' },
+                        { style: { top: 100 }, duration: 500, ease: 'easeOutCubic' },
+                        { style: { left: -100 }, duration: 500, ease: 'easeOutQuint' },
+                        { style: { top: -100 }, duration: 500, ease: 'easeInOutQuart' },
+                        r => {
+                            let dom = document.getElementById('aaa6');
+                            dom.style.backgroundColor = 'blue';
+                            r();
+                        },
+                    ]
+                },
+                {
+                    id: 'aaa6',
+                    desc: 'dsfasdf',
+                    code: [
+                        { style: { left: 100 }, duration: 500, ease: 'easeInOutQuad' },
+                        { style: { top: 100 }, duration: 500, ease: 'easeInOutQuad' },
+                        { style: { left: -100 }, duration: 500, ease: 'easeInOutQuad' },
+                        { style: { top: -100 }, duration: 500, ease: 'easeInOutQuad' },
+                        true
+                    ]
+                },
+                {
+                    id: 'aaa7',
+                    desc: 'dsfasdf',
+                    code: [
+                        { style: { borderRadius: [50, 'px'] }, duration: 500 },
+                        { style: { borderRadius: [-50, 'px'] }, duration: 500 },
+                        true
+                    ]
+                },
+                {
+                    id: 'aaa8',
+                    desc: 'dsfasdf',
+                    code: [
+                        { style: { borderRadius: [50, 'px'] }, duration: 500 },
+                        r => {
+                            let dom = document.getElementById('aaa8');
+                            dom.bgc = dom.bgc === 'red' ? 'green' : 'red';
+                            dom.style.backgroundColor = dom.bgc;
+                            r();
+                        },
+                        { style: { borderRadius: [-50, 'px'] }, duration: 500 },
+                        r => {
+                            let dom = document.getElementById('aaa8');
+                            dom.bgc = dom.bgc === 'red' ? 'green' : 'red';
+                            dom.style.backgroundColor = dom.bgc;
+                            r();
+                        },
+                        true
+                    ]
+                },
+            ];
+            function make_moving(ani_container) {
+                let moving_box = document.createElement('div');
+                moving_box.innerHTML = '';
+                moving_box.style.borderRadius = 20;
+                moving_box.style.width = 100;
+                moving_box.style.height = 100;
+                moving_box.style.backgroundColor = 'green';
+                moving_box.style.position = 'absolute';
+                ani_container.appendChild(moving_box);
+                return moving_box;
+            }
+            function gen_demo() {
+                let container = document.createElement('div');
+                let desc_container = document.createElement('div');
+                desc_container.className = 'desc_container';
+                let ani_container = document.createElement('div');
+                ani_container.className = 'ani_container';
+
+                let moving_box = make_moving(ani_container);
+                container.appendChild(desc_container);
+                container.appendChild(ani_container);
+                document.body.appendChild(container);
+                return {
+                    desc_container,
+                    ani_container,
+                    container,
+                    moving_box,
+                };
+            }
+            examples.forEach(dde => {
+                let demo = gen_demo();
+                demo.container.onclick = e => {
+                    proc.destroy();
+                    demo.moving_box.parentNode.removeChild(demo.moving_box);
+                    demo.moving_box = make_moving(demo.ani_container);
+                    demo.moving_box.id = dde.id;
+                    proc = Knimation(demo.moving_box, dde.code);
+                }
+                demo.desc_container.innerHTML = 'Knimation(element, ' + JSON.stringify(dde.code, undefined, 3) + ')';
+                let box = demo.moving_box;
+                box.id = dde.id;
+                let proc = Knimation(box, dde.code);
+            });
+        };
+    </script>
+    <style>
+        body {
+            margin: 0px;
+            padding: 40px;
+        }
+
+        .ani_container {
+            position: relative;
+            background-color: #ddd;
+            width: 100%;
+            height: 200px;
+        }
+
+        .desc_container {
+            /* border: 2px solid blue; */
+            padding: 20px;
+            padding-top: 50px;
+            /* position: relative; */
+            /* background-color: #ddd; */
+            /* width: 100%; */
+            /* height: 200px; */
+        }
+
+        .npm {
+            background-color: #ddd;
+            padding: 10px;
+            border-radius: 20px;
+
+        }
+
+        .githublink {
+            display: block;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Knimation Demo</h1>
+    <a class='githublink' href="https://github.com/kstost/knimation"
+        target="_blank">https://github.com/kstost/knimation</a>
+    <span class='npm'>npm install knimation</span>
+    <br /><br />
+    <hr />
+</body>
+
+</html>

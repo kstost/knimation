@@ -17,6 +17,9 @@ $ npm install knimation
 let dom = document.getElementById('mydom');
 let ani = Knimation(dom, [
   { style: { left: [0, 400] }, duration: 5000 },
+  r=>{
+    console.log('Animation finished');
+  }
 ]);
 
 /*

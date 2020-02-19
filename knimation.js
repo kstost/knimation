@@ -286,6 +286,11 @@ Knimation.animate = function (dom, schedule) {
         return { start, end__, uux };
     }
 
+    // let array_ = Array.isArray(schedule);
+    if (!Array.isArray(schedule)) {
+        schedule = [schedule];
+    }
+
     let inifinite = schedule[schedule.length - 1] === true;
     (async () => {
         while (dts.alive) {
@@ -296,8 +301,47 @@ Knimation.animate = function (dom, schedule) {
                     let type = typeof task;
                     await new Promise((resolve, reject) => {
                         if (dts.alive) {
-                            if (type === 'function') { task(resolve, reject); }
+                            if (type === 'function') {
+                                if (task.length) {
+                                    task(resolve, reject);
+                                } else {
+                                    (() => {
+                                        task();
+                                        resolve();
+                                    })();
+                                }
+                            }
                             if (type === 'object') {
+                                // task = JSON.parse(JSON.stringify(task));
+                                let transform_properties = {
+                                    px: ['translateX', 'translateY', 'translateZ', 'perspective'],
+                                    deg: ['skewX', 'skewY', 'rotate', 'rotateX', 'rotateY', 'rotateZ'],
+                                };
+                                let keke = Object.keys(task).filter(aa => {
+                                    return !(['style', 'duration', 'transform', 'ease', 'complete'].includes(aa));
+                                    // return true;
+                                });
+                                for (let i = 0; i < 2; i++) {
+                                    let fewe = keke.filter(key => {
+                                        let fe = 0;
+                                        Object.keys(transform_properties).forEach(fg => {
+                                            if (!fe) {
+                                                fe += transform_properties[fg].includes(key) ? 1 : 0;
+                                            }
+                                        });
+                                        return i === 0 ? fe > 0 : !(fe > 0);
+                                    });
+                                    fewe.forEach(key => {
+                                        let kn = i === 0 ? 'transform' : 'style';
+                                        if (!task[kn]) { task[kn] = {}; }
+                                        task[kn][key] = task[key];
+                                        delete task[key];
+                                    });
+                                }
+                                if (!task.duration) {
+                                    task.duration = 500;
+                                }
+                                // console.log(task);
                                 let end_count = 0;
                                 function endCall() {
                                     end_count++;
@@ -317,10 +361,10 @@ Knimation.animate = function (dom, schedule) {
                                                 let first = !eved[key];
                                                 eved[key] = !eved[key] ? val_extractor(task.transform[key], cdt_parsed[key]) : eved[key];
                                                 if (first && !eved[key].uux) {
-                                                    if (['translateX', 'translateY', 'translateZ', 'perspective'].includes(key)) {
+                                                    if (transform_properties.px.includes(key)) {
                                                         eved[key].uux = 'px';
                                                     }
-                                                    else if (['skewX', 'skewY', 'rotate', 'rotateX', 'rotateY', 'rotateZ'].includes(key)) {
+                                                    else if (transform_properties.deg.includes(key)) {
                                                         eved[key].uux = 'deg';
                                                     }
                                                 }
@@ -354,7 +398,10 @@ Knimation.animate = function (dom, schedule) {
                                         common_proc(dts, null, ani_proc, resolve, endCall);
                                     }
                                 }
-
+                                if (!dts.ani_list) {
+                                    // 아무런 애니메이션 프로세스도 등록되지 않았을때 그냥 빠르게 패스..
+                                    resolve();
+                                }
                             }
                         } else {
                             resolve();
@@ -366,6 +413,9 @@ Knimation.animate = function (dom, schedule) {
                             acc += d;
                         });
                         console.log(acc / dts.time_test.length);
+                    }
+                    if (task.complete) {
+                        task.complete();
                     }
                 }
             }

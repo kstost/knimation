@@ -8,25 +8,13 @@
                 {
                     id: 'aaa0',
                     desc: 'dsfasdf',
-                    code: [
-                        {
-                            style: { top: [0, 50] },
-                            transform: {
-                                translateX: [0, 100],
-                                skewX: [50]
-                            },
-                            duration: 1000
-                        },
-                        {
-                            style: { opacity: [1, 0.5] },
-                            transform: {
-                                rotate: [3.14 * 2, 'rad'],
-                                scale: [1, 0.5],
-                            },
-                            duration: 1000
-                        },
-
-                    ]
+                    code: {
+                        opacity: [0, 1],
+                        rotate: [3.14 * 2, 'rad'],
+                        translateY: [0, 100],
+                        duration: 100,
+                        complete: () => { console.log(999); }
+                    }
                 },
                 {
                     id: 'aaa1',

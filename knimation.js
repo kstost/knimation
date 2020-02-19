@@ -166,16 +166,6 @@ Knimation.animate = function (dom, schedule) {
         }
         return rtt;
     }
-    if (false) {
-        // console.log(style_attr_destruct("abec(-12.349ee)"));
-
-        // var string = ;
-        // console.log((transform_parse('scale(1.5) translate3d(20px, 5px, 10px) rotateX(20deg) rotateY(10deg) rotateZ(0deg) skew3d(20deg, 10deg) rotateX(-20deg) rotateY(100deg) rotateZ(-30deg)')));
-        // console.log(transform_stringify(transform_parse('scale(1.5) translate3d(20px, 5px, 10px) rotateX(-20deg) rotateY(100deg) rotateZ(-30deg) skew3d(20deg, 10deg)')));
-        console.log((transform_parse('scale(1.5) translate3d(20px, 5px, 10px) rotateX(-20deg) rotateY(100deg) rotateZ(-30deg) skew3d(20deg, 10deg)')));
-
-
-    }
     function calc_dist(start, end__) {
         let negative = start < end__;
         let distance_value = Math.abs(end__ - start);
@@ -196,7 +186,6 @@ Knimation.animate = function (dom, schedule) {
         var lse = {};
         for (let i = 0; i < properties.length; i++) {
             let dfew = properties[i].split('(');
-            // console.log(dfew.length >= 2);
             let nam = dfew[0].trim();
             let fe = dfew.length >= 2 ? (dfew[1].split(')')[0].split(',').map(a => a.trim()).map(d => {
                 return parseUnit(d);
@@ -286,7 +275,6 @@ Knimation.animate = function (dom, schedule) {
         return { start, end__, uux };
     }
 
-    // let array_ = Array.isArray(schedule);
     if (!Array.isArray(schedule)) {
         schedule = [schedule];
     }
@@ -316,6 +304,7 @@ Knimation.animate = function (dom, schedule) {
                                 let transform_properties = {
                                     px: ['translateX', 'translateY', 'translateZ', 'perspective'],
                                     deg: ['skewX', 'skewY', 'rotate', 'rotateX', 'rotateY', 'rotateZ'],
+                                    none: ['scaleX', 'scaleY', 'scaleZ', 'scale'],
                                 };
                                 let keke = Object.keys(task).filter(aa => {
                                     return !(['style', 'duration', 'transform', 'ease', 'complete'].includes(aa));

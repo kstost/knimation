@@ -247,7 +247,7 @@ Knimation.animate = function (dom, schedule) {
     }
     // function camelize(str) {
     // }
-    function val_extractor(val, valraw) {
+    function val_extractor(val, valraw, dom, key) {
         let arrty = Array.isArray(val);
         let uux = '';
         if (arrty) {
@@ -262,19 +262,47 @@ Knimation.animate = function (dom, schedule) {
             arrty = false;
             val = val[0];
         }
-        let start = arrty ? val[0] :
-            (
-                typeof valraw === 'string' ?
-                    toPX(valraw.trim()) :
-                    (
-                        valraw === undefined ? 0 :
-                            valraw[0][0]
-                    )
+        // let start = arrty ? val[0] :
+        //     (
+        //         typeof valraw === 'string' ?
+        //             toPX(valraw.trim()) :
+        //             (
+        //                 valraw === undefined ? 0 :
+        //                     valraw[0][0]
+        //             )
 
-            )
-            ;
+        //     )
+        //     ;
+        let start;
+        if (arrty) {
+            start = val[0];
+        } else {
+            if (typeof valraw === 'string') {
+                if (!valraw) {
+                    if (key === 'opacity') {
+                        // console.log(1);
+                        start = 1;
+                    }
+                    if (key === 'width') {
+                        start = parseFloat(getComputedStyle(dom, null).width.replace("px", ""));
+                    }
+                    if (key === 'height') {
+                        start = parseFloat(getComputedStyle(dom, null).height.replace("px", ""));
+                    }
+                }
+                if (start === undefined) {
+                    start = toPX(valraw.trim());
+                }
+            } else {
+                start = valraw === undefined ? 0 : valraw[0][0];
+            }
+        }
         let end__ = arrty ? val[1] : start + val;
-        return { start, end__, uux };
+        let jin = { start, end__, uux };
+        // if (key === 'opacity') {
+        // console.log(jin);
+        // }
+        return jin;
     }
 
     if (!Array.isArray(schedule)) {
@@ -350,7 +378,7 @@ Knimation.animate = function (dom, schedule) {
                                             for (let j = 0; j < transform_keys.length; j++) {
                                                 let key = transform_keys[j];
                                                 let first = !eved[key];
-                                                eved[key] = !eved[key] ? val_extractor(task.transform[key], cdt_parsed[key]) : eved[key];
+                                                eved[key] = !eved[key] ? val_extractor(task.transform[key], cdt_parsed[key], dom, key) : eved[key];
                                                 if (first && !eved[key].uux) {
                                                     if (transform_properties.px.includes(key)) {
                                                         eved[key].uux = 'px';
@@ -374,7 +402,7 @@ Knimation.animate = function (dom, schedule) {
                                 if (task.style) {
                                     for (let j = 0; j < style_keys.length; j++) {
                                         let key = style_keys[j];
-                                        let eved = val_extractor(task.style[key], dom.style[key])
+                                        let eved = val_extractor(task.style[key], dom.style[key], dom, key);
                                         let distance_value = calc_dist(eved.start, eved.end__);
                                         let att_needs_px = Knimation.att_for_px;
                                         let units = eved.uux;//

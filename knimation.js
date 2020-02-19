@@ -245,6 +245,8 @@ Knimation.animate = function (dom, schedule) {
         }
         return adfsc;
     }
+    // function camelize(str) {
+    // }
     function val_extractor(val, valraw) {
         let arrty = Array.isArray(val);
         let uux = '';
@@ -373,14 +375,18 @@ Knimation.animate = function (dom, schedule) {
                                     for (let j = 0; j < style_keys.length; j++) {
                                         let key = style_keys[j];
                                         let eved = val_extractor(task.style[key], dom.style[key])
-                                        // console.log(eved.start, '|', eved.end__, '|', task.style[key], '|', dom.style[key]);
                                         let distance_value = calc_dist(eved.start, eved.end__);
+                                        let att_needs_px = Knimation.att_for_px;
+                                        let units = eved.uux;//
+                                        if (!units && att_needs_px) {
+                                            units = (att_needs_px.includes(key)) ? 'px' : '';
+                                        }
                                         let ani_proc = new Knimation((delta_time, spent_time, spent_ratio, object_pointer) => {
                                             if (dts.alive) {
                                                 let ease_ratio = ease_function ? ease_function(spent_ratio) : spent_ratio;
                                                 let calc = distance_value.start + distance_value.distv * ease_ratio;
                                                 let cccl = Number((calc).toFixed(4));
-                                                dom.style[key] = eved.uux ? cccl + eved.uux : cccl;
+                                                dom.style[key] = cccl + units;
                                             }
                                             common_proc(dts, spent_ratio, object_pointer);
                                         }, task.duration);
@@ -435,6 +441,13 @@ Knimation.Easing = {
     easeOutQuint: t => 1 + (--t) * t * t * t * t,
     easeInOutQuint: t => t < .5 ? 16 * t * t * t * t * t : 1 + 16 * (--t) * t * t * t * t
 };
+Knimation.att_for_px = ["width", "vertical-align", "top", "text-indent", "right", "perspective", "padding-top", "padding-right", "padding-left", "padding-bottom", "padding", "outline-offset", "min-width", "min-height", "max-width", "max-height", "margin-top", "margin-right", "margin-left", "margin-bottom", "margin", "line-heught", "line-height", "letter-spacing", "left", "height", "grid-column-gap", "font-size", "font", "flex-basis", "column-width", "column-gap", "bottom", "border-width", "border-top-width", "border-top-right-radius", "border-top-left-radius", "border-top", "border-right-width", "border-right", "border-radius", "border-left-width", "border-left", "border-bottom-width", "border-bottom-right-radius", "border-bottom-left-radius", "border-bottom", "border", "background-size", "background-position"].map(str => {
+    return str.replace('-', ' ').replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
+        return index === 0 ? word.toLowerCase() : word.toUpperCase();
+    }).replace(/\s+/g, '');
+});
+// console.log(Knimation.att_for_px);
+
 if (typeof module === "object" && typeof module.exports === "object") {
     module.exports = Knimation;
 }

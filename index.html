@@ -1,7 +1,7 @@
 <html>
 
 <head>
-    <script async src="https://static.codepen.io/assets/embed/ei.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, target-densitydpi=device-dpi">
     <script src="./knimation.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Space+Mono&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./railscasts.css">
@@ -10,6 +10,25 @@
         let path = [];
         let txt = 'KNIMATION';
         let txtl = [];
+        let proc_sample = function () {
+            function aaa(elel) {
+                let parent = elel.parentNode;
+                let sandbox = parent.children[0];
+                let adf = {
+                html: parent.parentNode.children[1].innerText,
+                js: parent.parentNode.children[3].innerText,
+                }
+                sandbox.innerHTML = adf.html;
+                eval(adf.js);
+            }
+            document.querySelectorAll('.myButton').forEach(btn => {
+                btn.addEventListener('click', e => {
+                let elel = e.target;
+                aaa(elel);
+                });
+                aaa(btn);
+            });
+        };        
         function outerHeight(el) {
             var height = el.offsetHeight;
             var style = getComputedStyle(el);
@@ -138,6 +157,7 @@
             };
             document.body.onresize();
             window.scroll(0, 0);
+            proc_sample();
         };
     </script>
     <style>
@@ -193,6 +213,94 @@
         .linkbox {
             padding: 10px;
         }
+
+        .sandbox {
+            background-color:#444;
+            border:0px solid red;
+            position: relative;
+            height:400px;
+        }
+        .runbtn {
+            position: absolute;
+            left:0px;
+            top:0px;
+            color:red;
+        }
+        .cbox{
+            position: relative;
+        }
+
+
+
+
+
+        .selev {
+            background-color: #ffaa77;
+            width: 70px;
+            height: 70px;
+            position: absolute;
+        }
+
+        body {
+            background-color: #000;
+        }
+
+        .smallbox {
+            background-color: #44aa57;
+            width: 20px;
+            height: 20px;
+            position: absolute;
+            color: white;
+            font-weight: bold;
+        }
+
+        #box11a {
+            top: 0px;
+        }
+
+        #box11b {
+            top: 80px;
+        }
+
+
+
+        .sub_container {
+            position: relative;
+        }
+
+        .container{
+            padding: 30px;
+            border: 0px solid green;
+        }
+        /* .container div .myButton{
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        } */
+        pre{
+            border-top: 4px solid black;
+            padding:0px;
+            margin:0px;
+        }
+
+        .myButton {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            box-shadow:inset 0px 1px 0px 0px #7a8eb9;
+            background:linear-gradient(to bottom, #637aad 5%, #5972a7 100%);
+            background-color:#637aad;
+            border:1px solid #314179;
+            display:inline-block;
+            cursor:pointer;
+            color:#ffffff;
+            font-family:Arial;
+            font-size:13px;
+            font-weight:bold;
+            padding:6px 12px;
+            text-decoration:none;
+        }
+        
     </style>
 </head>
 
@@ -207,140 +315,531 @@
                 npm intall knimation
             </div>
         </div>
-        <p class="codepen" data-height="265" data-theme-id="default" data-default-tab="js,result" data-user="cssbaby"
-            data-slug-hash="vYOXLdQ"
-            style="height: 265px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;"
-            data-pen-title="vYOXLdQ">
-            <span>See the Pen <a href="https://codepen.io/cssbaby/pen/vYOXLdQ">
-                    vYOXLdQ</a> by jinji (<a href="https://codepen.io/cssbaby">@cssbaby</a>)
-                on <a href="https://codepen.io">CodePen</a>.</span>
-        </p>
 
-
-        <p class="codepen" data-height="265" data-theme-id="default" data-default-tab="js,result" data-user="cssbaby"
-            data-slug-hash="JjdRPeg"
-            style="height: 265px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;"
-            data-pen-title="JjdRPeg">
-            <span>See the Pen <a href="https://codepen.io/cssbaby/pen/JjdRPeg">
-                    JjdRPeg</a> by jinji (<a href="https://codepen.io/cssbaby">@cssbaby</a>)
-                on <a href="https://codepen.io">CodePen</a>.</span>
-        </p>
-
-
-        <p class="codepen" data-height="265" data-theme-id="default" data-default-tab="js,result" data-user="cssbaby"
-            data-slug-hash="wvazMQB"
-            style="height: 265px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;"
-            data-pen-title="wvazMQB">
-            <span>See the Pen <a href="https://codepen.io/cssbaby/pen/wvazMQB">
-                    wvazMQB</a> by jinji (<a href="https://codepen.io/cssbaby">@cssbaby</a>)
-                on <a href="https://codepen.io">CodePen</a>.</span>
-        </p>
-
-        <p class="codepen" data-height="265" data-theme-id="default" data-default-tab="js,result" data-user="cssbaby"
-            data-slug-hash="RwPGrqd"
-            style="height: 265px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;"
-            data-pen-title="RwPGrqd">
-            <span>See the Pen <a href="https://codepen.io/cssbaby/pen/RwPGrqd">
-                    RwPGrqd</a> by jinji (<a href="https://codepen.io/cssbaby">@cssbaby</a>)
-                on <a href="https://codepen.io">CodePen</a>.</span>
-        </p>
-        <p class="codepen" data-height="265" data-theme-id="default" data-default-tab="js,result" data-user="cssbaby"
-            data-slug-hash="gOpwPqV"
-            style="height: 265px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;"
-            data-pen-title="gOpwPqV">
-            <span>See the Pen <a href="https://codepen.io/cssbaby/pen/gOpwPqV">
-                    gOpwPqV</a> by jinji (<a href="https://codepen.io/cssbaby">@cssbaby</a>)
-                on <a href="https://codepen.io">CodePen</a>.</span>
-        </p>
-
-        <p class="codepen" data-height="265" data-theme-id="default" data-default-tab="js,result" data-user="cssbaby"
-            data-slug-hash="xxGEZej"
-            style="height: 265px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;"
-            data-pen-title="xxGEZej">
-            <span>See the Pen <a href="https://codepen.io/cssbaby/pen/xxGEZej">
-                    xxGEZej</a> by jinji (<a href="https://codepen.io/cssbaby">@cssbaby</a>)
-                on <a href="https://codepen.io">CodePen</a>.</span>
-        </p>
-
-        <p class="codepen" data-height="265" data-theme-id="default" data-default-tab="js,result" data-user="cssbaby"
-            data-slug-hash="jOPMaBv"
-            style="height: 265px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;"
-            data-pen-title="jOPMaBv">
-            <span>See the Pen <a href="https://codepen.io/cssbaby/pen/jOPMaBv">
-                    jOPMaBv</a> by jinji (<a href="https://codepen.io/cssbaby">@cssbaby</a>)
-                on <a href="https://codepen.io">CodePen</a>.</span>
-        </p>
-
-
-        <p class="codepen" data-height="265" data-theme-id="default" data-default-tab="js,result" data-user="cssbaby"
-            data-slug-hash="QWbKOgV"
-            style="height: 265px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;"
-            data-pen-title="QWbKOgV">
-            <span>See the Pen <a href="https://codepen.io/cssbaby/pen/QWbKOgV">
-                    QWbKOgV</a> by jinji (<a href="https://codepen.io/cssbaby">@cssbaby</a>)
-                on <a href="https://codepen.io">CodePen</a>.</span>
-        </p>
-
-        <p class="codepen" data-height="265" data-theme-id="default" data-default-tab="js,result" data-user="cssbaby"
-            data-slug-hash="NWqRwvz"
-            style="height: 265px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;"
-            data-pen-title="NWqRwvz">
-            <span>See the Pen <a href="https://codepen.io/cssbaby/pen/NWqRwvz">
-                    NWqRwvz</a> by jinji (<a href="https://codepen.io/cssbaby">@cssbaby</a>)
-                on <a href="https://codepen.io">CodePen</a>.</span>
-        </p>
-
-        <p class="codepen" data-height="265" data-theme-id="default" data-default-tab="js,result" data-user="cssbaby"
-            data-slug-hash="OJVROZv"
-            style="height: 265px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;"
-            data-pen-title="OJVROZv">
-            <span>See the Pen <a href="https://codepen.io/cssbaby/pen/OJVROZv">
-                    OJVROZv</a> by jinji (<a href="https://codepen.io/cssbaby">@cssbaby</a>)
-                on <a href="https://codepen.io">CodePen</a>.</span>
-        </p>
-
-        <p class="codepen" data-height="265" data-theme-id="default" data-default-tab="js,result" data-user="cssbaby"
-            data-slug-hash="qBdaVKN"
-            style="height: 265px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;"
-            data-pen-title="qBdaVKN">
-            <span>See the Pen <a href="https://codepen.io/cssbaby/pen/qBdaVKN">
-                    qBdaVKN</a> by jinji (<a href="https://codepen.io/cssbaby">@cssbaby</a>)
-                on <a href="https://codepen.io">CodePen</a>.</span>
-        </p>
-
-
-        <p class="codepen" data-height="265" data-theme-id="default" data-default-tab="js,result" data-user="cssbaby"
-            data-slug-hash="JjdROQE"
-            style="height: 265px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;"
-            data-pen-title="JjdROQE">
-            <span>See the Pen <a href="https://codepen.io/cssbaby/pen/JjdROQE">
-                    JjdROQE</a> by jinji (<a href="https://codepen.io/cssbaby">@cssbaby</a>)
-                on <a href="https://codepen.io">CodePen</a>.</span>
-        </p>
-
-        <p class="codepen" data-height="265" data-theme-id="default" data-default-tab="js,result" data-user="cssbaby"
-            data-slug-hash="RwPGjmx"
-            style="height: 265px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;"
-            data-pen-title="RwPGjmx">
-            <span>See the Pen <a href="https://codepen.io/cssbaby/pen/RwPGjmx">
-                    RwPGjmx</a> by jinji (<a href="https://codepen.io/cssbaby">@cssbaby</a>)
-                on <a href="https://codepen.io">CodePen</a>.</span>
-        </p>
-
-        <p class="codepen" data-height="265" data-theme-id="default" data-default-tab="js,result" data-user="cssbaby"
-            data-slug-hash="poJEVBE"
-            style="height: 265px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;"
-            data-pen-title="poJEVBE">
-            <span>See the Pen <a href="https://codepen.io/cssbaby/pen/poJEVBE">
-                    poJEVBE</a> by jinji (<a href="https://codepen.io/cssbaby">@cssbaby</a>)
-                on <a href="https://codepen.io">CodePen</a>.</span>
-        </p>
 
     </div>
     <!--
-    <pre><code class="html"></code></pre>
-    <script>hljs.initHighlightingOnLoad();</script>
+    
     -->
+    <div id='ground'>
+
+<div class='container'>
+<pre><code class="html">&lt;div id="box1" class="selev"&gt;&lt;/div&gt;</code></pre>
+<pre style="display:none;">&lt;div id="box1" class="selev"&gt;&lt;/div&gt;</pre>
+<pre><code class="javascript">let box = document.getElementById('box1');
+Knimation(box, { left: [100, 200] });
+
+// 100 에서 200 으로 이동합니다
+// element 를 Knimation 함수의 첫 인자로,
+// 두번째 인자로는 애니메이션 관련 옵션을 넣습니다</code></pre>
+<pre style="display:none;">let box = document.getElementById('box1');
+Knimation(box, { left: [100, 200] });
+
+// 100 에서 200 으로 이동합니다
+// element 를 Knimation 함수의 첫 인자로,
+// 두번째 인자로는 애니메이션 관련 옵션을 넣습니다</pre>
+<div class='sub_container'>
+    <div class='sandbox'></div>
+    <button class='myButton'>RUN</button>
+</div>
+</div>
+    
+
+<div class='container'>
+<pre><code class="html">&lt;div id="box2" class="selev"&gt;&lt;/div&gt;</code></pre>
+<pre style="display:none;">&lt;div id="box2" class="selev"&gt;&lt;/div&gt;</pre>
+<pre><code class="javascript">let box = document.getElementById('box2');
+Knimation(box, { left: [100, 200], duration: 5000 });
+
+// duration 으로 속도를 정할 수 있습니다
+// 5000 은 5초</code></pre>
+<pre style="display:none;">let box = document.getElementById('box2');
+Knimation(box, { left: [100, 200], duration: 5000 });
+
+// duration 으로 속도를 정할 수 있습니다
+// 5000 은 5초</pre>
+<div class='sub_container'>
+    <div class='sandbox'></div>
+    <button class='myButton'>RUN</button>
+</div>
+</div>
+    
+
+<div class='container'>
+<pre><code class="html">&lt;div id="box3" class="selev"&gt;&lt;/div&gt;</code></pre>
+<pre style="display:none;">&lt;div id="box3" class="selev"&gt;&lt;/div&gt;</pre>
+<pre><code class="javascript">let box = document.getElementById('box3');
+Knimation(box, {
+    left: [0, 10, 'em'],
+    // 이렇게 [] 에 세개의 항목을 넣으면
+    // 시작점 0에서 끝점 10까지로 이동하고
+    // 이 값들의 단위는 em으로 정의합니다
+    // [0, 10] 이렇게만 해주면 단위의 기본은 px입니다
+    duration: 5000
+});</code></pre>
+<pre style="display:none;">let box = document.getElementById('box3');
+Knimation(box, {
+    left: [0, 10, 'em'],
+    // 이렇게 [] 에 세개의 항목을 넣으면
+    // 시작점 0에서 끝점 10까지로 이동하고
+    // 이 값들의 단위는 em으로 정의합니다
+    // [0, 10] 이렇게만 해주면 단위의 기본은 px입니다
+    duration: 5000
+});</pre>
+<div class='sub_container'>
+    <div class='sandbox'></div>
+    <button class='myButton'>RUN</button>
+</div>
+</div>
+    
+
+<div class='container'>
+<pre><code class="html">&lt;div id="box4" class="selev"&gt;&lt;/div&gt;</code></pre>
+<pre style="display:none;">&lt;div id="box4" class="selev"&gt;&lt;/div&gt;</pre>
+<pre><code class="javascript">let box = document.getElementById('box4');
+Knimation(box, {
+    left: [0, 100],
+    opacity: [1, 0.3],
+    // 동시에 두가지 이상의 속성을 변경할 수 있습니다
+
+    duration: 5000
+});</code></pre>
+<pre style="display:none;">let box = document.getElementById('box4');
+Knimation(box, {
+    left: [0, 100],
+    opacity: [1, 0.3],
+    // 동시에 두가지 이상의 속성을 변경할 수 있습니다
+
+    duration: 5000
+});</pre>
+<div class='sub_container'>
+    <div class='sandbox'></div>
+    <button class='myButton'>RUN</button>
+</div>
+</div>
+    
+
+<div class='container'>
+<pre><code class="html">&lt;div id="box5" class="selev"&gt;&lt;/div&gt;</code></pre>
+<pre style="display:none;">&lt;div id="box5" class="selev"&gt;&lt;/div&gt;</pre>
+<pre><code class="javascript">let box = document.getElementById('box5');
+Knimation(box, {
+    left: [100, 200],
+    duration: 1000,
+    complete: () => {
+        // 애니메이션 종료시 실행 될 함수를 등록할 수 있습니다
+        box.style.backgroundColor = 'yellow';
+        box.style.borderRadius = '20px';
+    }
+});</code></pre>
+<pre style="display:none;">let box = document.getElementById('box5');
+Knimation(box, {
+    left: [100, 200],
+    duration: 1000,
+    complete: () => {
+        // 애니메이션 종료시 실행 될 함수를 등록할 수 있습니다
+        box.style.backgroundColor = 'yellow';
+        box.style.borderRadius = '20px';
+    }
+});</pre>
+<div class='sub_container'>
+    <div class='sandbox'></div>
+    <button class='myButton'>RUN</button>
+</div>
+</div>
+    
+
+<div class='container'>
+<pre><code class="html">&lt;div id="box6" class="selev"&gt;&lt;/div&gt;</code></pre>
+<pre style="display:none;">&lt;div id="box6" class="selev"&gt;&lt;/div&gt;</pre>
+<pre><code class="javascript">let box = document.getElementById('box6');
+Knimation(box, [
+    { left: [40, 100], duration: 1000 },
+    { left: [100, 40], duration: 1000 },
+]);
+// [] 에 스케쥴을 여러개 넣을 수 있습니다</code></pre>
+<pre style="display:none;">let box = document.getElementById('box6');
+Knimation(box, [
+    { left: [40, 100], duration: 1000 },
+    { left: [100, 40], duration: 1000 },
+]);
+// [] 에 스케쥴을 여러개 넣을 수 있습니다</pre>
+<div class='sub_container'>
+    <div class='sandbox'></div>
+    <button class='myButton'>RUN</button>
+</div>
+</div>
+    
+
+<div class='container'>
+<pre><code class="html">&lt;div id="box7" class="selev"&gt;&lt;/div&gt;</code></pre>
+<pre style="display:none;">&lt;div id="box7" class="selev"&gt;&lt;/div&gt;</pre>
+<pre><code class="javascript">let box = document.getElementById('box7');
+Knimation(box, [
+    { left: 100, duration: 1000 },
+    { top: -20, duration: 1000 },
+]);
+// 이렇게 숫자를 한개만 넣으면 현재위치에 해당 값을 더한곳을 목표로 향해갑니다</code></pre>
+<pre style="display:none;">let box = document.getElementById('box7');
+Knimation(box, [
+    { left: 100, duration: 1000 },
+    { top: -20, duration: 1000 },
+]);
+// 이렇게 숫자를 한개만 넣으면 현재위치에 해당 값을 더한곳을 목표로 향해갑니다</pre>
+<div class='sub_container'>
+    <div class='sandbox'></div>
+    <button class='myButton'>RUN</button>
+</div>
+</div>
+    
+
+<div class='container'>
+<pre><code class="html">&lt;div id="box8" class="selev"&gt;&lt;/div&gt;</code></pre>
+<pre style="display:none;">&lt;div id="box8" class="selev"&gt;&lt;/div&gt;</pre>
+<pre><code class="javascript">let box = document.getElementById('box8');
+Knimation(box, [
+    { left: 100, duration: 500 },
+    { left: -100, duration: 500 },
+    true,
+]);
+// 마지막요소에 true 를 넣어주면 해당 스케쥴을 무한으로 반복합니다</code></pre>
+<pre style="display:none;">let box = document.getElementById('box8');
+Knimation(box, [
+    { left: 100, duration: 500 },
+    { left: -100, duration: 500 },
+    true,
+]);
+// 마지막요소에 true 를 넣어주면 해당 스케쥴을 무한으로 반복합니다</pre>
+<div class='sub_container'>
+    <div class='sandbox'></div>
+    <button class='myButton'>RUN</button>
+</div>
+</div>
+    
+
+<div class='container'>
+<pre><code class="html">&lt;button id='pause'&gt;잠시정지&lt;/button&gt;
+&lt;button id='resume'&gt;재생재개&lt;/button&gt;
+&lt;button id='destroy'&gt;완전종료&lt;/button&gt;
+&lt;div id="box9" class="selev"&gt;&lt;/div&gt;</code></pre>
+<pre style="display:none;">&lt;button id='pause'&gt;잠시정지&lt;/button&gt;
+&lt;button id='resume'&gt;재생재개&lt;/button&gt;
+&lt;button id='destroy'&gt;완전종료&lt;/button&gt;
+&lt;div id="box9" class="selev"&gt;&lt;/div&gt;</pre>
+<pre><code class="javascript">let box = document.getElementById('box9');
+let ani = Knimation(box, [
+    { left: 100, duration: 500 },
+    { left: -100, duration: 500 },
+    true,
+]);
+// 마지막요소에 true 를 넣어주면 해당 스케쥴을 무한으로 반복합니다
+// 이렇게 무한반복하는 스케쥴에 대해서 정지, 재개, 완전종료 처리를 할 수 있습니다.
+document.getElementById('pause').onclick = () => {
+    ani.pause();
+}
+document.getElementById('resume').onclick = () => {
+    ani.resume();
+}
+document.getElementById('destroy').onclick = () => {
+    ani.destroy();
+}</code></pre>
+<pre style="display:none;">let box = document.getElementById('box9');
+let ani = Knimation(box, [
+    { left: 100, duration: 500 },
+    { left: -100, duration: 500 },
+    true,
+]);
+// 마지막요소에 true 를 넣어주면 해당 스케쥴을 무한으로 반복합니다
+// 이렇게 무한반복하는 스케쥴에 대해서 정지, 재개, 완전종료 처리를 할 수 있습니다.
+document.getElementById('pause').onclick = () => {
+    ani.pause();
+}
+document.getElementById('resume').onclick = () => {
+    ani.resume();
+}
+document.getElementById('destroy').onclick = () => {
+    ani.destroy();
+}</pre>
+<div class='sub_container'>
+    <div class='sandbox'></div>
+    <button class='myButton'>RUN</button>
+</div>
+</div>
+    
+
+<div class='container'>
+<pre><code class="html">&lt;div id="box10" class="selev"&gt;&lt;/div&gt;</code></pre>
+<pre style="display:none;">&lt;div id="box10" class="selev"&gt;&lt;/div&gt;</pre>
+<pre><code class="javascript">let toggle = true;
+let box = document.getElementById('box10');
+Knimation(box, [
+    () => {
+        // 원하는 코드 실행
+        toggle = !toggle;
+        box.style.backgroundColor = toggle ?
+            'red' : 'blue';
+    },
+    { left: 100, duration: 500 },
+    { top: 100, duration: 500 },
+    () => {
+        // 원하는 코드 실행
+        toggle = !toggle;
+        box.style.backgroundColor = toggle ?
+            'red' : 'blue';
+    },
+    { left: -100, duration: 500 },
+    { top: -100, duration: 500 },
+    true,
+]);
+
+// 스케쥴 중간중간에 실행을 원하는 함수를 넣을 수 있습니다</code></pre>
+<pre style="display:none;">let toggle = true;
+let box = document.getElementById('box10');
+Knimation(box, [
+    () => {
+        // 원하는 코드 실행
+        toggle = !toggle;
+        box.style.backgroundColor = toggle ?
+            'red' : 'blue';
+    },
+    { left: 100, duration: 500 },
+    { top: 100, duration: 500 },
+    () => {
+        // 원하는 코드 실행
+        toggle = !toggle;
+        box.style.backgroundColor = toggle ?
+            'red' : 'blue';
+    },
+    { left: -100, duration: 500 },
+    { top: -100, duration: 500 },
+    true,
+]);
+
+// 스케쥴 중간중간에 실행을 원하는 함수를 넣을 수 있습니다</pre>
+<div class='sub_container'>
+    <div class='sandbox'></div>
+    <button class='myButton'>RUN</button>
+</div>
+</div>
+    
+
+<div class='container'>
+<pre><code class="html">&lt;div id="box11a" class="selev"&gt;&lt;/div&gt;
+&lt;div id="box11b" class="selev"&gt;&lt;/div&gt;</code></pre>
+<pre style="display:none;">&lt;div id="box11a" class="selev"&gt;&lt;/div&gt;
+&lt;div id="box11b" class="selev"&gt;&lt;/div&gt;</pre>
+<pre><code class="javascript">// ease 속성에 움직임의 가속도 모드를 설정하여 더욱 자연스러운 움직임을 표현할 수 있습니다.
+// 움직임 효과의 종류는 linear, easeInQuad, easeOutQuad, easeInOutQuad, easeInCubic, easeOutCubic, easeInOutCubic, easeInQuart, easeOutQuart, easeInOutQuart, easeInQuint, easeOutQuint, easeInOutQuint 가 있습니다.
+
+let box = document.getElementById('box11a');
+Knimation(box, [
+    { left: 200, duration: 500, ease: 'easeInQuad' },
+    { left: -200, duration: 500, ease: 'easeOutQuad' },
+    true
+]);
+
+// ease 를 적용하지 않은 모습 (일정한 속도의 변화)
+let box2 = document.getElementById('box11b');
+Knimation(box2, [
+    { left: 200, duration: 500 },
+    { left: -200, duration: 500 },
+    true
+]);</code></pre>
+<pre style="display:none;">// ease 속성에 움직임의 가속도 모드를 설정하여 더욱 자연스러운 움직임을 표현할 수 있습니다.
+// 움직임 효과의 종류는 linear, easeInQuad, easeOutQuad, easeInOutQuad, easeInCubic, easeOutCubic, easeInOutCubic, easeInQuart, easeOutQuart, easeInOutQuart, easeInQuint, easeOutQuint, easeInOutQuint 가 있습니다.
+
+let box = document.getElementById('box11a');
+Knimation(box, [
+    { left: 200, duration: 500, ease: 'easeInQuad' },
+    { left: -200, duration: 500, ease: 'easeOutQuad' },
+    true
+]);
+
+// ease 를 적용하지 않은 모습 (일정한 속도의 변화)
+let box2 = document.getElementById('box11b');
+Knimation(box2, [
+    { left: 200, duration: 500 },
+    { left: -200, duration: 500 },
+    true
+]);</pre>
+<div class='sub_container'>
+    <div class='sandbox'></div>
+    <button class='myButton'>RUN</button>
+</div>
+</div>
+    
+
+<div class='container'>
+<pre><code class="html">&lt;div id="box11"&gt;&lt;/div&gt;</code></pre>
+<pre style="display:none;">&lt;div id="box11"&gt;&lt;/div&gt;</pre>
+<pre><code class="javascript">[
+'linear',
+'easeInQuad',
+'easeOutQuad',
+'easeInOutQuad',
+'easeInCubic',
+'easeOutCubic',
+'easeInOutCubic',
+'easeInQuart',
+'easeOutQuart',
+'easeInOutQuart',
+'easeInQuint',
+'easeOutQuint',
+'easeInOutQuint'].map((ease_mode, i) => {
+    let div = document.createElement('div');
+    div.className = 'smallbox selev';
+    div.style.top = (i * (20 + 4)) + 'px';
+    document.getElementById('box11').appendChild(div);
+    div.innerText = ease_mode;
+    Knimation(div, [
+        { left: 200, duration: 2000, ease: ease_mode },
+        { left: -200, duration: 2000, ease: ease_mode },
+        true,
+    ]);
+});</code></pre>
+<pre style="display:none;">[
+'linear',
+'easeInQuad',
+'easeOutQuad',
+'easeInOutQuad',
+'easeInCubic',
+'easeOutCubic',
+'easeInOutCubic',
+'easeInQuart',
+'easeOutQuart',
+'easeInOutQuart',
+'easeInQuint',
+'easeOutQuint',
+'easeInOutQuint'].map((ease_mode, i) => {
+    let div = document.createElement('div');
+    div.className = 'smallbox selev';
+    div.style.top = (i * (20 + 4)) + 'px';
+    document.getElementById('box11').appendChild(div);
+    div.innerText = ease_mode;
+    Knimation(div, [
+        { left: 200, duration: 2000, ease: ease_mode },
+        { left: -200, duration: 2000, ease: ease_mode },
+        true,
+    ]);
+});</pre>
+<div class='sub_container'>
+    <div class='sandbox'></div>
+    <button class='myButton'>RUN</button>
+</div>
+</div>
+    
+
+<div class='container'>
+<pre><code class="html">&lt;div id="box12" class="selev"&gt;&lt;/div&gt;</code></pre>
+<pre style="display:none;">&lt;div id="box12" class="selev"&gt;&lt;/div&gt;</pre>
+<pre><code class="javascript">let box = document.getElementById('box12');
+Knimation(box, [
+    // 이것과
+    { rotate: [0, 10], duration: 500 },
+    { rotate: [10, 0], duration: 500 },
+
+    // 이것은 같은 작동을 합니다
+    { rotate: 30, duration: 500 },
+    { rotate: -30, duration: 500 },
+    true,
+]);</code></pre>
+<pre style="display:none;">let box = document.getElementById('box12');
+Knimation(box, [
+    // 이것과
+    { rotate: [0, 10], duration: 500 },
+    { rotate: [10, 0], duration: 500 },
+
+    // 이것은 같은 작동을 합니다
+    { rotate: 30, duration: 500 },
+    { rotate: -30, duration: 500 },
+    true,
+]);</pre>
+<div class='sub_container'>
+    <div class='sandbox'></div>
+    <button class='myButton'>RUN</button>
+</div>
+</div>
+    
+
+<div class='container'>
+<pre><code class="html">&lt;div id="box13" class="selev"&gt;&lt;/div&gt;</code></pre>
+<pre style="display:none;">&lt;div id="box13" class="selev"&gt;&lt;/div&gt;</pre>
+<pre><code class="javascript">let box = document.getElementById('box13');
+Knimation(box, [
+    // 현재 스케일 크기에 0.5 를 더한다
+    { scale: 0.5, duration: 1000 },
+
+    // 현재 스케일 크기에 -1 을 더한다
+    { scale: -1, duration: 1000 },
+
+    // 현재 스케일크기 무관하게 0에서 1로 변환한다
+    { scale: [0, 1], duration: 1000 },
+
+    //무한루프
+    true
+
+]);</code></pre>
+<pre style="display:none;">let box = document.getElementById('box13');
+Knimation(box, [
+    // 현재 스케일 크기에 0.5 를 더한다
+    { scale: 0.5, duration: 1000 },
+
+    // 현재 스케일 크기에 -1 을 더한다
+    { scale: -1, duration: 1000 },
+
+    // 현재 스케일크기 무관하게 0에서 1로 변환한다
+    { scale: [0, 1], duration: 1000 },
+
+    //무한루프
+    true
+
+]);</pre>
+<div class='sub_container'>
+    <div class='sandbox'></div>
+    <button class='myButton'>RUN</button>
+</div>
+</div>
+    
+    
+
+<div class='container'>
+<pre><code class="html">&lt;div id="box14" class="selev"&gt;&lt;/div&gt;</code></pre>
+<pre style="display:none;">&lt;div id="box14" class="selev"&gt;&lt;/div&gt;</pre>
+<pre><code class="javascript">let box = document.getElementById('box14');
+Knimation(box, [
+    { scale: 0.5, duration: 1000 },
+    r=>{
+        // r 는 함수입니다 (Promise 에서 resolve)
+        // 여기에서 r() 이렇게 실행해주지 않으면 다음 스케쥴로 넘어가지 않습니다
+        // AJAX 등의 비동기적 처리 이후에 r() 해서 다음 스케쥴로 넘어가도록 처리하면 됩니다
+        setTimeout(()=>{
+            r();
+        },1000);
+    },
+    { scale: -1, duration: 1000 },
+]);</code></pre>
+<pre style="display:none;">let box = document.getElementById('box14');
+Knimation(box, [
+    { scale: 0.5, duration: 1000 },
+    r=>{
+        // r 는 함수입니다 (Promise 에서 resolve)
+        // 여기에서 r() 이렇게 실행해주지 않으면 다음 스케쥴로 넘어가지 않습니다
+        // AJAX 등의 비동기적 처리 이후에 r() 해서 다음 스케쥴로 넘어가도록 처리하면 됩니다
+        setTimeout(()=>{
+            r();
+        },1000);
+    },
+    { scale: -1, duration: 1000 },
+]);</pre>
+<div class='sub_container'>
+    <div class='sandbox'></div>
+    <button class='myButton'>RUN</button>
+</div>
+</div>
+    
+
+    </div>
+    <script>hljs.initHighlightingOnLoad();</script>
 </body>
 
 </html>

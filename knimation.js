@@ -262,27 +262,15 @@ Knimation.animate = function (dom, schedule) {
             arrty = false;
             val = val[0];
         }
-        // let start = arrty ? val[0] :
-        //     (
-        //         typeof valraw === 'string' ?
-        //             toPX(valraw.trim()) :
-        //             (
-        //                 valraw === undefined ? 0 :
-        //                     valraw[0][0]
-        //             )
-
-        //     )
-        //     ;
         let start;
         if (arrty) {
             start = val[0];
         } else {
             if (typeof valraw === 'string') {
-                if (!valraw) {
-                    if (key === 'opacity') {
-                        // console.log(1);
-                        start = 1;
-                    }
+                if (valraw.length === 0) {
+                    if (key === 'top') { start = dom.offsetTop; }
+                    if (key === 'left') { start = dom.offsetLeft; }
+                    if (key === 'opacity') { start = 1; }
                     if (key === 'width') {
                         start = parseFloat(getComputedStyle(dom, null).width.replace("px", ""));
                     }
@@ -299,9 +287,6 @@ Knimation.animate = function (dom, schedule) {
         }
         let end__ = arrty ? val[1] : start + val;
         let jin = { start, end__, uux };
-        // if (key === 'opacity') {
-        // console.log(jin);
-        // }
         return jin;
     }
 
@@ -330,22 +315,15 @@ Knimation.animate = function (dom, schedule) {
                                 }
                             }
                             if (type === 'object') {
-                                // task = JSON.parse(JSON.stringify(task));
-                                let transform_properties = {
-                                    px: ['translateX', 'translateY', 'translateZ', 'perspective'],
-                                    deg: ['skewX', 'skewY', 'rotate', 'rotateX', 'rotateY', 'rotateZ'],
-                                    none: ['scaleX', 'scaleY', 'scaleZ', 'scale'],
-                                };
                                 let keke = Object.keys(task).filter(aa => {
-                                    return !(['style', 'duration', 'transform', 'ease', 'complete'].includes(aa));
-                                    // return true;
+                                    return !(Knimation.basic_properties.includes(aa));
                                 });
                                 for (let i = 0; i < 2; i++) {
                                     let fewe = keke.filter(key => {
                                         let fe = 0;
-                                        Object.keys(transform_properties).forEach(fg => {
+                                        Object.keys(Knimation.transform_properties).forEach(fg => {
                                             if (!fe) {
-                                                fe += transform_properties[fg].includes(key) ? 1 : 0;
+                                                fe += Knimation.transform_properties[fg].includes(key) ? 1 : 0;
                                             }
                                         });
                                         return i === 0 ? fe > 0 : !(fe > 0);
@@ -360,7 +338,6 @@ Knimation.animate = function (dom, schedule) {
                                 if (!task.duration) {
                                     task.duration = 500;
                                 }
-                                // console.log(task);
                                 let end_count = 0;
                                 function endCall() {
                                     end_count++;
@@ -380,10 +357,10 @@ Knimation.animate = function (dom, schedule) {
                                                 let first = !eved[key];
                                                 eved[key] = !eved[key] ? val_extractor(task.transform[key], cdt_parsed[key], dom, key) : eved[key];
                                                 if (first && !eved[key].uux) {
-                                                    if (transform_properties.px.includes(key)) {
+                                                    if (Knimation.transform_properties.px.includes(key)) {
                                                         eved[key].uux = 'px';
                                                     }
-                                                    else if (transform_properties.deg.includes(key)) {
+                                                    else if (Knimation.transform_properties.deg.includes(key)) {
                                                         eved[key].uux = 'deg';
                                                     }
                                                 }
@@ -469,12 +446,17 @@ Knimation.Easing = {
     easeOutQuint: t => 1 + (--t) * t * t * t * t,
     easeInOutQuint: t => t < .5 ? 16 * t * t * t * t * t : 1 + 16 * (--t) * t * t * t * t
 };
+Knimation.basic_properties = ['style', 'duration', 'transform', 'ease', 'complete'];
+Knimation.transform_properties = {
+    px: ['translateX', 'translateY', 'translateZ', 'perspective'],
+    deg: ['skewX', 'skewY', 'rotate', 'rotateX', 'rotateY', 'rotateZ'],
+    none: ['scaleX', 'scaleY', 'scaleZ', 'scale'],
+};
 Knimation.att_for_px = ["width", "vertical-align", "top", "text-indent", "right", "perspective", "padding-top", "padding-right", "padding-left", "padding-bottom", "padding", "outline-offset", "min-width", "min-height", "max-width", "max-height", "margin-top", "margin-right", "margin-left", "margin-bottom", "margin", "line-heught", "line-height", "letter-spacing", "left", "height", "grid-column-gap", "font-size", "font", "flex-basis", "column-width", "column-gap", "bottom", "border-width", "border-top-width", "border-top-right-radius", "border-top-left-radius", "border-top", "border-right-width", "border-right", "border-radius", "border-left-width", "border-left", "border-bottom-width", "border-bottom-right-radius", "border-bottom-left-radius", "border-bottom", "border", "background-size", "background-position"].map(str => {
     return str.replace('-', ' ').replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
         return index === 0 ? word.toLowerCase() : word.toUpperCase();
     }).replace(/\s+/g, '');
 });
-// console.log(Knimation.att_for_px);
 
 if (typeof module === "object" && typeof module.exports === "object") {
     module.exports = Knimation;

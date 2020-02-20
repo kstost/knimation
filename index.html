@@ -102,7 +102,8 @@
             txtl.map((element, i) => {
                 let width = char_width(element);
                 let toggle = true;
-                element.style.left = (10 + (width * i)) + 'px';
+                let margg = 10;
+                element.style.left = ((txtl.length * margg) / 2) + (((width - margg) * i)) + 'px';
                 element.style.top = (stage_moto_height - outerHeight(element)) / 2 + 'px';
                 let speed = 700;
                 Knimation(element, [
@@ -170,14 +171,16 @@
             background-color: black;
             color: white;
         }
+
         .github a {
             color: yellow;
         }
+
         .github {
             background-color: #222;
             padding: 10px;
             border-radius: 10px;
-            margin-bottom:10px;
+            margin-bottom: 10px;
         }
 
         .npm {

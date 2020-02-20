@@ -282,7 +282,22 @@ Knimation.animate = function (dom, schedule) {
                     start = toPX(valraw.trim());
                 }
             } else {
-                start = valraw === undefined ? 0 : valraw[0][0];
+                let value_as_nothing = 0;
+                if (valraw === undefined) {
+                    if (key === 'scale') {
+                        value_as_nothing = 1;
+                    }
+                    if (key === 'scaleX') {
+                        value_as_nothing = 1;
+                    }
+                    if (key === 'scaleY') {
+                        value_as_nothing = 1;
+                    }
+                    if (key === 'scaleZ') {
+                        value_as_nothing = 1;
+                    }
+                }
+                start = valraw === undefined ? value_as_nothing : valraw[0][0];
             }
         }
         let end__ = arrty ? val[1] : start + val;

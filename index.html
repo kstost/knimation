@@ -1,204 +1,380 @@
 <html>
 
 <head>
+    <script async src="https://static.codepen.io/assets/embed/ei.js"></script>
     <script src="./knimation.js"></script>
-    <script>
-        window.onload = () => {
-            let examples = [
-                {
-                    id: 'aaa0',
-                    desc: 'dsfasdf',
-                    code: {
-                        width:300,
-                        opacity: -0.5,
-                        rotate: [3.14 * 2, 'rad'],
-                        translateY: [0, 100],
-                        duration: 10000,
-                        complete: () => { console.log(999); }
-                    }
-                },
-                {
-                    id: 'aaa1',
-                    desc: 'dsfasdf',
-                    code: [
-                        { style: { left: [400] }, duration: 5000 },
-                    ]
-                },
-                {
-                    id: 'aaa2',
-                    desc: 'dsfasdf',
-                    code: [
-                        { style: { left: [0, 400], top: [0, 50] }, duration: 5000 },
-                    ]
-                },
-                {
-                    id: 'aaa3',
-                    desc: 'dsfasdf',
-                    code: [
-                        { style: { width: [0, 400], opacity: [1, 0.4] }, duration: 5000 },
-                    ]
-                },
-                {
-                    id: 'aaa4',
-                    desc: 'dsfasdf',
-                    code: [
-                        { style: { left: [0, 400] }, duration: 5000, ease: 'easeInOutQuad' },
-                    ]
-                },
-                {
-                    id: 'aaa5',
-                    desc: 'dsfasdf',
-                    code: [
-                        { style: { left: [0, 400] }, duration: 5000, ease: 'easeInQuad' },
-                        { style: { left: -200 }, duration: 5000 },
-                    ]
-                },
-                {
-                    id: 'aaa6',
-                    desc: 'dsfasdf',
-                    code: [
-                        { style: { left: 100 }, duration: 500, ease: 'easeInOutQuad' },
-                        { style: { top: 100 }, duration: 500, ease: 'easeOutCubic' },
-                        { style: { left: -100 }, duration: 500, ease: 'easeOutQuint' },
-                        { style: { top: -100 }, duration: 500, ease: 'easeInOutQuart' },
-                        r => {
-                            let dom = document.getElementById('aaa6');
-                            dom.style.backgroundColor = 'blue';
-                            r();
-                        },
-                    ]
-                },
-                {
-                    id: 'aaa6',
-                    desc: 'dsfasdf',
-                    code: [
-                        { style: { left: 100 }, duration: 500, ease: 'easeInOutQuad' },
-                        { style: { top: 100 }, duration: 500, ease: 'easeInOutQuad' },
-                        { style: { left: -100 }, duration: 500, ease: 'easeInOutQuad' },
-                        { style: { top: -100 }, duration: 500, ease: 'easeInOutQuad' },
-                        true
-                    ]
-                },
-                {
-                    id: 'aaa7',
-                    desc: 'dsfasdf',
-                    code: [
-                        { style: { borderRadius: [50, 'px'] }, duration: 500 },
-                        { style: { borderRadius: [-50, 'px'] }, duration: 500 },
-                        true
-                    ]
-                },
-                {
-                    id: 'aaa8',
-                    desc: 'dsfasdf',
-                    code: [
-                        { style: { borderRadius: [50, 'px'] }, duration: 500 },
-                        r => {
-                            let dom = document.getElementById('aaa8');
-                            dom.bgc = dom.bgc === 'red' ? 'green' : 'red';
-                            dom.style.backgroundColor = dom.bgc;
-                            r();
-                        },
-                        { style: { borderRadius: [-50, 'px'] }, duration: 500 },
-                        r => {
-                            let dom = document.getElementById('aaa8');
-                            dom.bgc = dom.bgc === 'red' ? 'green' : 'red';
-                            dom.style.backgroundColor = dom.bgc;
-                            r();
-                        },
-                        true
-                    ]
-                },
-            ];
-            function make_moving(ani_container) {
-                let moving_box = document.createElement('div');
-                moving_box.innerHTML = '';
-                moving_box.style.borderRadius = 20;
-                moving_box.style.width = 100;
-                moving_box.style.height = 100;
-                moving_box.style.backgroundColor = 'green';
-                moving_box.style.position = 'absolute';
-                ani_container.appendChild(moving_box);
-                return moving_box;
-            }
-            function gen_demo() {
-                let container = document.createElement('div');
-                let desc_container = document.createElement('div');
-                desc_container.className = 'desc_container';
-                let ani_container = document.createElement('div');
-                ani_container.className = 'ani_container';
+    <script src="./cocos2d-js-ksttool.js" charset="UTF-8"></script>
+    <link href="https://fonts.googleapis.com/css?family=Space+Mono&display=swap" rel="stylesheet">
 
-                let moving_box = make_moving(ani_container);
-                container.appendChild(desc_container);
-                container.appendChild(ani_container);
-                document.body.appendChild(container);
-                return {
-                    desc_container,
-                    ani_container,
-                    container,
-                    moving_box,
-                };
-            }
-            examples.forEach(dde => {
-                let demo = gen_demo();
-                demo.container.onclick = e => {
-                    proc.destroy();
-                    demo.moving_box.parentNode.removeChild(demo.moving_box);
-                    demo.moving_box = make_moving(demo.ani_container);
-                    demo.moving_box.id = dde.id;
-                    proc = Knimation(demo.moving_box, dde.code);
+    <script>
+        let path = [];
+        let txt = 'KNIMATION';
+        let txtl = [];
+        function outerHeight(el) {
+            var height = el.offsetHeight;
+            var style = getComputedStyle(el);
+
+            height += parseInt(style.marginTop) + parseInt(style.marginBottom);
+            return height;
+        }
+        function fit_fontsize_to_pixel_scale(element, destination_pixel_size, direction) {
+            /*
+          
+            <div>안녕</div>
+          
+            이것의 font-size 를 정해줌으로써 높이를 120px에 맞추고싶다.
+            그렇다면 font-size 를 몇을 줘야 높이가 120px과 같게될까?
+          
+            그럴땐 
+            fit_fontsize_to_pixel_scale(element, 120, width); 라고 해주면 된다.
+            마지막 인자인 direction 를 false 로 하면 높이를 120에 맞게 해준다는 뜻이다.
+            true 로 하면 너비를 120에 맞추겠다는 뜻이다.
+          
+            */
+            element.style.fontSize = '1px';
+            let measure = direction ? function (el) {
+                let width = el.offsetWidth;
+                let style = getComputedStyle(el);
+                width += parseInt(style.marginLeft) + parseInt(style.marginRight);
+                return width;
+            } : function (el) {
+                let height = el.offsetHeight;
+                let style = getComputedStyle(el);
+                height += parseInt(style.marginTop) + parseInt(style.marginBottom);
+                return height;
+            };
+            let set_fontsize = null;
+            set_fontsize = fontsize => (element.style.fontSize = fontsize + danwe);
+            let get_mesuared_at = idx => (mesuared_list[mesuared_list.length - idx]);
+            let danwe = 'em';
+            let infinit_loop_breaker = 0;
+            let mesuared_list = [];
+            let fontsize = destination_pixel_size / 2;
+            fontsize = Math.round(fontsize);
+            set_fontsize(fontsize);
+            mesuared_list[mesuared_list.length] = measure(element);
+            while (true) {
+                let current_value = get_mesuared_at(1);
+                if (current_value === destination_pixel_size) { break; } else {
+                    fontsize = fontsize * (destination_pixel_size / current_value);
+                    set_fontsize(fontsize);
+                    mesuared_list[mesuared_list.length] = measure(element);
+                    if (get_mesuared_at(1) < destination_pixel_size && mesuared_list.length >= 4) {
+                        let cond = (get_mesuared_at(1) === get_mesuared_at(3)) &&
+                            (get_mesuared_at(2) === get_mesuared_at(4)) &&
+                            (get_mesuared_at(1) !== get_mesuared_at(2));
+                        if (cond) { break; }
+                    } else {
+                        if (mesuared_list.length >= 3) {
+                            if (get_mesuared_at(1) === get_mesuared_at(2) &&
+                                get_mesuared_at(2) === get_mesuared_at(3)
+                            ) { break; }
+                        }
+                    }
+                    infinit_loop_breaker++;
+                    if (infinit_loop_breaker > 10) { break; }
                 }
-                demo.desc_container.innerHTML = 'Knimation(element, ' + JSON.stringify(dde.code, undefined, 3) + ')';
-                let box = demo.moving_box;
-                box.id = dde.id;
-                let proc = Knimation(box, dde.code);
-            });
+            }
+            return {
+                fontSize: element.style.fontSize,
+                number: fontsize,
+                element_pixel: get_mesuared_at(1),
+            };
+        }
+        window.onload = () => {
+            function char_width(element) {
+                let mgn = 20;
+                let dt = stage_moto_width / txt.length;
+                fit_fontsize_to_pixel_scale(element, dt - mgn, true);
+                return dt;
+            }
+            let rbody = document.getElementById('rbody');
+            let stage = document.getElementById('stage');
+            let stage_moto_width = parseFloat(getComputedStyle(stage, null).width.replace("px", ""));
+            let stage_moto_height = parseFloat(getComputedStyle(stage, null).height.replace("px", ""));
+            let dot = (ch, pos) => {
+                let dd = document.createElement('div');
+                dd.innerText = ch;
+                dd.style.paddingLeft = '15px';
+                dd.style.paddingRight = '15px';
+                dd.className = 'dot';
+                dd.style.color = 'yellow';
+                dd.style.position = 'absolute';
+                if (pos) {
+                    dd.style.left = pos.x + 'px';
+                    dd.style.top = pos.y + 'px';
+                }
+                stage.appendChild(dd);
+                return dd;
+            }
+            // let wcnt = 10;
+            // let whaba = stage_moto_width / wcnt;
+            txt.split('').map((ch, i) => {
+                let dde = dot(ch, { x: (20 * i), y: 100 });
+                txtl.push(dde);
+
+            })
+
+            txtl.map((element, i) => {
+                let width = char_width(element);
+                let toggle = true;
+                element.style.left = (10 + (width * i)) + 'px';
+                element.style.top = (stage_moto_height - outerHeight(element)) / 2 + 'px';
+                let speed = 700;
+                Knimation(element, [
+                    r => {
+                        if (toggle) {
+                            toggle = false;
+                            setTimeout(r, i * speed);
+                        } else {
+                            r();
+                        }
+                    },
+                    // { scale: 1, duration: 10000 }, // 주석..
+                    { top: 30, rotate: 180, duration: speed },
+                    { top: -30, rotate: 180, duration: speed },
+                    { scale: [1, 1], duration: 1 },
+                    { top: -30, scale: [1, 1.3], duration: speed },
+                    { top: 30, scale: -0.3, duration: speed },
+                    true
+                ])
+            })
+            // for (let i = 0; i < wcnt; i++) {
+
+            // }
+            if (false) {
+                setInterval(() => {
+                    [
+                        ['k', [{ "x": 15, "y": 15 }, { "x": 20, "y": 181 }, { "x": 21, "y": 98 }, { "x": 84, "y": 14 }, { "x": 22, "y": 99 }, { "x": 85, "y": 178 }]],
+                        ['n', [{ "x": 115, "y": 185 }, { "x": 115, "y": 85 }, { "x": 131, "y": 111 }, { "x": 148, "y": 85 }, { "x": 169, "y": 83 }, { "x": 180, "y": 107 }, { "x": 172, "y": 188 }]],
+                        ['i', [{ "x": 208, "y": 72 }, { "x": 204, "y": 190 }]],
+                        ['m', [{ "x": 234, "y": 188 }, { "x": 231, "y": 89 }, { "x": 253, "y": 77 }, { "x": 271, "y": 94 }, { "x": 272, "y": 189 }, { "x": 274, "y": 97 }, { "x": 298, "y": 77 }, { "x": 315, "y": 99 }, { "x": 314, "y": 187 }]],
+                        ['a', [{ "x": 425, "y": 187 }, { "x": 389, "y": 83 }, { "x": 347, "y": 109 }, { "x": 347, "y": 185 }, { "x": 393, "y": 185 }, { "x": 410, "y": 146 }]],
+                        ['t', [{ "x": 417, "y": 74 }, { "x": 488, "y": 73 }, { "x": 455, "y": 76 }, { "x": 459, "y": 192 }]],
+                        ['i', [{ "x": 502, "y": 193 }, { "x": 513, "y": 90 }]],
+                        ['o', [{ "x": 546, "y": 195 }, { "x": 526, "y": 174 }, { "x": 525, "y": 148 }, { "x": 534, "y": 112 }, { "x": 551, "y": 91 }, { "x": 571, "y": 103 }, { "x": 589, "y": 116 }, { "x": 589, "y": 145 }, { "x": 581, "y": 176 }, { "x": 566, "y": 197 }]],
+                        ['n', [{ "x": 599, "y": 195 }, { "x": 608, "y": 107 }, { "x": 610, "y": 122 }, { "x": 626, "y": 108 }, { "x": 640, "y": 116 }, { "x": 642, "y": 161 }, { "x": 639, "y": 198 }]]
+                    ].forEach(ad => {
+                        let sc = ad[1];
+                        let dt = dot();
+                        let few = [];
+                        sc.map((dd, i) => {
+                            let next = sc[i + 1];
+                            if (next) {
+                                let sf = {
+                                    left: [dd.x, next.x],
+                                    top: [dd.y, next.y],
+                                    duration: 1000,
+                                };
+                                few.push(sf);
+                            }
+                        });
+                        few.push(() => {
+                            dt.parentNode.removeChild(dt);
+                        });
+                        // console.log(few);
+                        Knimation(dt, few);
+
+                    });
+                }, 1000);
+            }
+
+            // document.getElementById('stage').style,wid
+            // console.log();
+            document.getElementById('stage').style.top = 200;
+
+            let ratio = 0;
+
+
+
+            document.body.onresize = () => {
+                ratio = document.body.clientWidth / stage_moto_width;
+                // let ddf = parseFloat(getComputedStyle(stage, null).width.replace("px", "")) * ratio;
+                if (true) {
+                    let ddf = stage_moto_width * ratio;
+                    stage.style.marginLeft = (ddf - stage_moto_width) / 2;
+                    stage.style.transform = 'scale(' + ratio + ')';
+                }
+                if (true) {
+                    let ddf = stage_moto_height * ratio;
+                    stage.style.marginTop = ((ddf - stage_moto_height) / 2) - (stage_moto_height);
+                    // stage.style.transform = 'scale(' + ratio + ')';
+                }
+                // stage.style.position = 'absolute';
+                // stage.style.left= 0;
+                // console.log(document.body.clientHeight);
+                // console.log(document.body.clientWidth);
+                // rbody.style.marginTop = 200*ratio;
+                document.body.style.marginTop = 200 * ratio;
+
+            };
+            document.body.onresize();
+            window.scroll(0, 0);
         };
     </script>
     <style>
+        * {
+            font-family: 'Space Mono', monospace;
+
+        }
+
         body {
-            margin: 0px;
-            padding: 40px;
+            margin: 0;
+            background-color: black;
         }
 
-        .ani_container {
-            position: relative;
-            background-color: #ddd;
-            width: 100%;
-            height: 200px;
+        .dot {
+            background-color: #000;
+            padding: 4px;
+            position: absolute;
+            border-radius: 30px;
         }
 
-        .desc_container {
-            /* border: 2px solid blue; */
-            padding: 20px;
-            padding-top: 50px;
-            /* position: relative; */
-            /* background-color: #ddd; */
-            /* width: 100%; */
-            /* height: 200px; */
+        .stage {
+            border: 0px solid red;
+            /* margin: auto; */
+            padding: 0px;
+            position: absolute;
+            width: 700;
+            background-color: #666;
+            height: 200;
         }
 
-        .npm {
-            background-color: #ddd;
-            padding: 10px;
-            border-radius: 20px;
-
-        }
-
-        .githublink {
-            display: block;
-            margin-bottom: 20px;
+        #rbody {
+            background-color: black;
+            color: white;
         }
     </style>
 </head>
 
 <body>
-    <h1>Knimation Demo</h1>
-    <a class='githublink' href="https://github.com/kstost/knimation"
-        target="_blank">https://github.com/kstost/knimation</a>
-    <span class='npm'>npm install knimation</span>
-    <br /><br />
-    <hr />
+    <div class='stage' id='stage'> </div>
+    <div id='rbody'>
+        ABCD
+        <!--
+        <p class="codepen" data-height="265" data-theme-id="default" data-default-tab="js,result" data-user="cssbaby"
+            data-slug-hash="vYOXLdQ"
+            style="height: 265px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;"
+            data-pen-title="vYOXLdQ">
+            <span>See the Pen <a href="https://codepen.io/cssbaby/pen/vYOXLdQ">
+                    vYOXLdQ</a> by jinji (<a href="https://codepen.io/cssbaby">@cssbaby</a>)
+                on <a href="https://codepen.io">CodePen</a>.</span>
+        </p>
+
+
+        <p class="codepen" data-height="265" data-theme-id="default" data-default-tab="js,result" data-user="cssbaby"
+            data-slug-hash="JjdRPeg"
+            style="height: 265px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;"
+            data-pen-title="JjdRPeg">
+            <span>See the Pen <a href="https://codepen.io/cssbaby/pen/JjdRPeg">
+                    JjdRPeg</a> by jinji (<a href="https://codepen.io/cssbaby">@cssbaby</a>)
+                on <a href="https://codepen.io">CodePen</a>.</span>
+        </p>
+
+
+        <p class="codepen" data-height="265" data-theme-id="default" data-default-tab="js,result" data-user="cssbaby"
+            data-slug-hash="wvazMQB"
+            style="height: 265px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;"
+            data-pen-title="wvazMQB">
+            <span>See the Pen <a href="https://codepen.io/cssbaby/pen/wvazMQB">
+                    wvazMQB</a> by jinji (<a href="https://codepen.io/cssbaby">@cssbaby</a>)
+                on <a href="https://codepen.io">CodePen</a>.</span>
+        </p>
+
+        <p class="codepen" data-height="265" data-theme-id="default" data-default-tab="js,result" data-user="cssbaby"
+            data-slug-hash="RwPGrqd"
+            style="height: 265px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;"
+            data-pen-title="RwPGrqd">
+            <span>See the Pen <a href="https://codepen.io/cssbaby/pen/RwPGrqd">
+                    RwPGrqd</a> by jinji (<a href="https://codepen.io/cssbaby">@cssbaby</a>)
+                on <a href="https://codepen.io">CodePen</a>.</span>
+        </p>
+        <p class="codepen" data-height="265" data-theme-id="default" data-default-tab="js,result" data-user="cssbaby"
+            data-slug-hash="gOpwPqV"
+            style="height: 265px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;"
+            data-pen-title="gOpwPqV">
+            <span>See the Pen <a href="https://codepen.io/cssbaby/pen/gOpwPqV">
+                    gOpwPqV</a> by jinji (<a href="https://codepen.io/cssbaby">@cssbaby</a>)
+                on <a href="https://codepen.io">CodePen</a>.</span>
+        </p>
+
+        <p class="codepen" data-height="265" data-theme-id="default" data-default-tab="js,result" data-user="cssbaby"
+            data-slug-hash="xxGEZej"
+            style="height: 265px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;"
+            data-pen-title="xxGEZej">
+            <span>See the Pen <a href="https://codepen.io/cssbaby/pen/xxGEZej">
+                    xxGEZej</a> by jinji (<a href="https://codepen.io/cssbaby">@cssbaby</a>)
+                on <a href="https://codepen.io">CodePen</a>.</span>
+        </p>
+
+        <p class="codepen" data-height="265" data-theme-id="default" data-default-tab="js,result" data-user="cssbaby"
+            data-slug-hash="jOPMaBv"
+            style="height: 265px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;"
+            data-pen-title="jOPMaBv">
+            <span>See the Pen <a href="https://codepen.io/cssbaby/pen/jOPMaBv">
+                    jOPMaBv</a> by jinji (<a href="https://codepen.io/cssbaby">@cssbaby</a>)
+                on <a href="https://codepen.io">CodePen</a>.</span>
+        </p>
+
+
+        <p class="codepen" data-height="265" data-theme-id="default" data-default-tab="js,result" data-user="cssbaby"
+            data-slug-hash="QWbKOgV"
+            style="height: 265px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;"
+            data-pen-title="QWbKOgV">
+            <span>See the Pen <a href="https://codepen.io/cssbaby/pen/QWbKOgV">
+                    QWbKOgV</a> by jinji (<a href="https://codepen.io/cssbaby">@cssbaby</a>)
+                on <a href="https://codepen.io">CodePen</a>.</span>
+        </p>
+
+        <p class="codepen" data-height="265" data-theme-id="default" data-default-tab="js,result" data-user="cssbaby"
+            data-slug-hash="NWqRwvz"
+            style="height: 265px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;"
+            data-pen-title="NWqRwvz">
+            <span>See the Pen <a href="https://codepen.io/cssbaby/pen/NWqRwvz">
+                    NWqRwvz</a> by jinji (<a href="https://codepen.io/cssbaby">@cssbaby</a>)
+                on <a href="https://codepen.io">CodePen</a>.</span>
+        </p>
+
+        <p class="codepen" data-height="265" data-theme-id="default" data-default-tab="js,result" data-user="cssbaby"
+            data-slug-hash="OJVROZv"
+            style="height: 265px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;"
+            data-pen-title="OJVROZv">
+            <span>See the Pen <a href="https://codepen.io/cssbaby/pen/OJVROZv">
+                    OJVROZv</a> by jinji (<a href="https://codepen.io/cssbaby">@cssbaby</a>)
+                on <a href="https://codepen.io">CodePen</a>.</span>
+        </p>
+
+        <p class="codepen" data-height="265" data-theme-id="default" data-default-tab="js,result" data-user="cssbaby"
+            data-slug-hash="qBdaVKN"
+            style="height: 265px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;"
+            data-pen-title="qBdaVKN">
+            <span>See the Pen <a href="https://codepen.io/cssbaby/pen/qBdaVKN">
+                    qBdaVKN</a> by jinji (<a href="https://codepen.io/cssbaby">@cssbaby</a>)
+                on <a href="https://codepen.io">CodePen</a>.</span>
+        </p>
+
+
+        <p class="codepen" data-height="265" data-theme-id="default" data-default-tab="js,result" data-user="cssbaby"
+            data-slug-hash="JjdROQE"
+            style="height: 265px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;"
+            data-pen-title="JjdROQE">
+            <span>See the Pen <a href="https://codepen.io/cssbaby/pen/JjdROQE">
+                    JjdROQE</a> by jinji (<a href="https://codepen.io/cssbaby">@cssbaby</a>)
+                on <a href="https://codepen.io">CodePen</a>.</span>
+        </p>
+
+        <p class="codepen" data-height="265" data-theme-id="default" data-default-tab="js,result" data-user="cssbaby"
+            data-slug-hash="RwPGjmx"
+            style="height: 265px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;"
+            data-pen-title="RwPGjmx">
+            <span>See the Pen <a href="https://codepen.io/cssbaby/pen/RwPGjmx">
+                    RwPGjmx</a> by jinji (<a href="https://codepen.io/cssbaby">@cssbaby</a>)
+                on <a href="https://codepen.io">CodePen</a>.</span>
+        </p>
+        -->
+    </div>
+
+
 </body>
 
 </html>

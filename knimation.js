@@ -329,7 +329,11 @@ Knimation.animate = function (dom, schedule) {
                                     })();
                                 }
                             }
-                            if (type === 'object') {
+                            else if (type === 'number') {
+                                // delay
+                                setTimeout(resolve, task);
+                            }
+                            else if (type === 'object') {
                                 let keke = Object.keys(task).filter(aa => {
                                     return !(Knimation.basic_properties.includes(aa));
                                 });
@@ -361,8 +365,10 @@ Knimation.animate = function (dom, schedule) {
                                 let ease_function = Knimation.Easing[task.ease ? task.ease : 'linear'];
                                 let style_keys = task.style ? Object.keys(task.style) : [];
                                 let transform_keys = task.transform ? Object.keys(task.transform) : [];
+                                let thread_count = 0;
                                 if (task.transform) {
                                     let eved = {};
+                                    let ani_count = thread_count++;
                                     let ani_proc = new Knimation((delta_time, spent_time, spent_ratio, object_pointer) => {
                                         if (dts.alive) {
                                             let current_dom_transform = dom.style.transform;
@@ -386,6 +392,7 @@ Knimation.animate = function (dom, schedule) {
                                                 cdt_parsed[key] = [[cccl, eved[key].uux]];
                                             }
                                             dom.style.transform = transform_stringify(cdt_parsed);
+                                            if (ani_count === 0 && task.everyframe) { task.everyframe(spent_ratio); }
                                         }
                                         common_proc(dts, spent_ratio, object_pointer);
                                     }, task.duration);
@@ -401,12 +408,14 @@ Knimation.animate = function (dom, schedule) {
                                         if (!units && att_needs_px) {
                                             units = (att_needs_px.includes(key)) ? 'px' : '';
                                         }
+                                        let ani_count = thread_count++;
                                         let ani_proc = new Knimation((delta_time, spent_time, spent_ratio, object_pointer) => {
                                             if (dts.alive) {
                                                 let ease_ratio = ease_function ? ease_function(spent_ratio) : spent_ratio;
                                                 let calc = distance_value.start + distance_value.distv * ease_ratio;
                                                 let cccl = Number((calc).toFixed(4));
                                                 dom.style[key] = cccl + units;
+                                                if (ani_count === 0 && task.everyframe) { task.everyframe(spent_ratio); }
                                             }
                                             common_proc(dts, spent_ratio, object_pointer);
                                         }, task.duration);
@@ -461,7 +470,7 @@ Knimation.Easing = {
     easeOutQuint: t => 1 + (--t) * t * t * t * t,
     easeInOutQuint: t => t < .5 ? 16 * t * t * t * t * t : 1 + 16 * (--t) * t * t * t * t
 };
-Knimation.basic_properties = ['style', 'duration', 'transform', 'ease', 'complete'];
+Knimation.basic_properties = ['style', 'duration', 'transform', 'ease', 'complete', 'everyframe'];
 Knimation.transform_properties = {
     px: ['translateX', 'translateY', 'translateZ', 'perspective'],
     deg: ['skewX', 'skewY', 'rotate', 'rotateX', 'rotateY', 'rotateZ'],

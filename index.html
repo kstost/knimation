@@ -172,7 +172,7 @@
         }
 
         .dot {
-            background-color: #000;
+            background-color: #333;
             padding: 4px;
             position: absolute;
             border-radius: 30px;
@@ -183,7 +183,7 @@
             padding: 0px;
             position: absolute;
             width: 700;
-            background-color: #666;
+            background-color: #000;
             height: 200;
         }
 
@@ -207,6 +207,7 @@
             background-color: #222;
             padding: 10px;
             border-radius: 10px;
+            color:yellowgreen;
 
         }
 
@@ -306,13 +307,14 @@
 
 <body>
     <div class='stage' id='stage'> </div>
-    <div id='rbody'>
-        <div class='linkbox'>
+    <!-- <div id='rbody'> -->
+        <div class='container'>
+            <div class='linkbox'>
             <div class="github">
                 <a href='https://github.com/kstost/knimation'>https://github.com/kstost/knimation</a>
             </div>
             <div class="npm">
-                npm intall knimation
+                $ npm install knimation
             </div>
         </div>
 
@@ -322,6 +324,15 @@
     
     -->
     <div id='ground'>
+
+
+        <div class='container'>
+            <pre><code class="html">&lt;!--헤드에 넣어주세요--&gt;
+&lt;script src="https://kstost.github.io/knimation/knimation.js"&gt;&lt;/script&gt;</code></pre>
+        </div>
+
+
+
 
 <div class='container'>
 <pre><code class="html">&lt;div id="box1" class="selev"&gt;&lt;/div&gt;</code></pre>
@@ -836,7 +847,87 @@ Knimation(box, [
     <button class='myButton'>RUN</button>
 </div>
 </div>
+
+
+
+
+
+
+
     
+    
+
+<div class='container'>
+<pre><code class="html">&lt;div id="box15" class="selev"&gt;&lt;/div&gt;</code></pre>
+<pre style="display:none;">&lt;div id="box15" class="selev"&gt;&lt;/div&gt;</pre>
+<pre><code class="javascript">let box = document.getElementById('box15');
+Knimation(box, [
+    // everyframe 키로 함수를 전달하게 되면
+    // 매 프레임마다 이 함수를 실행하며 이 함수는 p 라는 인자를 받습니다
+    // p는 현재 애니메이션의 진행 %입니다 duration 이 10000이고 현재 5초째 진행중이면 p는 0.5입니다
+    { top: 100, duration: 10000, everyframe: p=>{
+        box.innerText = p;
+    } },
+    { top: -100, duration: 500 },
+    true
+]);</code></pre>
+<pre style="display:none;">let box = document.getElementById('box15');
+Knimation(box, [
+    // everyframe 키로 함수를 전달하게 되면
+    // 매 프레임마다 이 함수를 실행하며 이 함수는 p 라는 인자를 받습니다
+    // p는 현재 애니메이션의 진행 %입니다 duration 이 10000이고 현재 5초째 진행중이면 p는 0.5입니다
+    { top: 100, duration: 10000, everyframe: p=>{
+        box.innerText = p;
+    } },
+    { top: -100, duration: 500 },
+    true
+]);</pre>
+<div class='sub_container'>
+    <div class='sandbox'></div>
+    <button class='myButton'>RUN</button>
+</div>
+</div>
+    
+
+
+
+
+    
+    
+
+<div class='container'>
+<pre><code class="html">&lt;div id="box16" class="selev"&gt;&lt;/div&gt;</code></pre>
+<pre style="display:none;">&lt;div id="box16" class="selev"&gt;&lt;/div&gt;</pre>
+<pre><code class="javascript">let box = document.getElementById('box16');
+Knimation(box, [
+    // 이렇게 숫자를 스케쥴 사이에 넣어주게되면 해당 숫자시간만큼 딜레이합니다
+    // 1000 은 1초입니다
+    1000,
+    { top: 100, duration: 500 },
+    1000,
+    { top: -100, duration: 500 },
+    true
+]);</code></pre>
+<pre style="display:none;">let box = document.getElementById('box16');
+Knimation(box, [
+    // 이렇게 숫자를 스케쥴 사이에 넣어주게되면 해당 숫자시간만큼 딜레이합니다
+    // 1000 은 1초입니다
+    1000,
+    { top: 100, duration: 500 },
+    1000,
+    { top: -100, duration: 500 },
+    true
+]);</pre>
+<div class='sub_container'>
+    <div class='sandbox'></div>
+    <button class='myButton'>RUN</button>
+</div>
+</div>
+    
+
+
+    
+
 
     </div>
     <script>hljs.initHighlightingOnLoad();</script>

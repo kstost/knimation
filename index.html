@@ -929,6 +929,134 @@ Knimation(box, [
     
 
 
+
+    
+    
+
+<div class='container'>
+<pre><code class="html">&lt;div id="box17" class="selev"&gt;&lt;/div&gt;</code></pre>
+<pre style="display:none;">&lt;div id="box17" class="selev"&gt;&lt;/div&gt;</pre>
+<pre><code class="javascript">let box = document.getElementById('box17');
+Knimation(box, [
+    { top: 100, duration: 500 },
+    { rotate: 90, duration: 500 },
+    { rotate: -90, duration: 500 },
+    { top: -100, duration: 500, goto: 0 },
+    // goto 에 숫자를 주면 해당 애니메이션 종료 후 해당 숫자에 해당하는 순서의 스케쥴로 이동합니다
+    // 즉 0번째로 이동하게됩니다.
+    // 따라서 3번째인 left: 100 스케쥴로는 영원히 가지 않습니다
+    // 그리고 무한으로 반복됩니다
+    
+    { left: 100, duration: 500 }
+]);</code></pre>
+<pre style="display:none;">let box = document.getElementById('box17');
+Knimation(box, [
+    { top: 100, duration: 500 },
+    { rotate: 90, duration: 500 },
+    { rotate: -90, duration: 500 },
+    { top: -100, duration: 500, goto: 0 },
+    // goto 에 숫자를 주면 해당 애니메이션 종료 후 해당 숫자에 해당하는 순서의 스케쥴로 이동합니다
+    // 즉 0번째로 이동하게됩니다.
+    // 따라서 3번째인 left: 100 스케쥴로는 영원히 가지 않습니다
+    // 그리고 무한으로 반복됩니다
+
+    { left: 100, duration: 500 }
+]);</pre>
+<div class='sub_container'>
+    <div class='sandbox'></div>
+    <button class='myButton'>RUN</button>
+</div>
+</div>
+    
+
+
+    
+
+    
+    
+
+<div class='container'>
+<pre><code class="html">&lt;div id="box18" class="selev"&gt;&lt;/div&gt;</code></pre>
+<pre style="display:none;">&lt;div id="box18" class="selev"&gt;&lt;/div&gt;</pre>
+<pre><code class="javascript">let box = document.getElementById('box18');
+Knimation(box, [
+    // 이렇게 스케쥴에 함수를 넣어 r(2) 이렇게 해주면
+    // 2번째 스케쥴로 이동합니다
+    // r(-1) 이렇게 해주면 가장 마지막 것으로 이동
+    // r(-2) 이렇게 해주면 마지막에서 두번째 것으로 이동
+    r => {
+        r(2);
+    },
+    { left: 100 },
+    { top: 100 },
+    { opacity: [1, 0.5] },
+]);</code></pre>
+<pre style="display:none;">let box = document.getElementById('box18');
+Knimation(box, [
+    // 이렇게 스케쥴에 함수를 넣어 r(2) 이렇게 해주면
+    // 2번째 스케쥴로 이동합니다
+    // r(-1) 이렇게 해주면 가장 마지막 것으로 이동
+    // r(-2) 이렇게 해주면 마지막에서 두번째 것으로 이동
+    r => {
+        r(2);
+    },
+    { left: 100 },
+    { top: 100 },
+    { opacity: [1, 0.5] },
+]);</pre>
+<div class='sub_container'>
+    <div class='sandbox'></div>
+    <button class='myButton'>RUN</button>
+</div>
+</div>
+    
+
+
+
+    
+
+<div class='container'>
+<pre><code class="html">&lt;div id="box19" class="selev"&gt;&lt;/div&gt;</code></pre>
+<pre style="display:none;">&lt;div id="box19" class="selev"&gt;&lt;/div&gt;</pre>
+<pre><code class="javascript">let box = document.getElementById('box19');
+Knimation(box, [
+    // 이렇게 표현해주면 10회 반복합니다
+    "<@loop:10>", // 루프시작
+    { opacity: -1, rotate:10, duration:50 },
+    { opacity: 1, duration:50 },
+    (r,i)=>{
+        // 현재 회차에 대한 값을 이렇게 참조할 수 있습니다
+        box.innerText = i.loop;
+        r();
+    },
+    "<&#47;@loop>", // 루프끝
+    1000, // 1초 쉬고
+    true, // 다시 처음으로
+]);</code></pre>
+<pre style="display:none;">let box = document.getElementById('box19');
+Knimation(box, [
+    // 이렇게 표현해주면 10회 반복합니다
+    "<@loop:10>", // 루프시작
+    { opacity: -1, rotate:10, duration:50 },
+    { opacity: 1, duration:50 },
+    (r,i)=>{
+        // 현재 회차에 대한 값을 이렇게 참조할 수 있습니다
+        box.innerText = i.loop;
+        r();
+    },
+    "<"+"/@loop>", // 루프끝
+    1000, // 1초 쉬고
+    true, // 다시 처음으로
+]);</pre>
+<div class='sub_container'>
+    <div class='sandbox'></div>
+    <button class='myButton'>RUN</button>
+</div>
+</div>
+    
+
+        
+
     </div>
     <script>hljs.initHighlightingOnLoad();</script>
 </body>

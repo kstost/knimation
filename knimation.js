@@ -308,7 +308,7 @@ Knimation.animate = function (dom, schedule) {
     if (!Array.isArray(schedule)) {
         schedule = [schedule];
     }
-
+    let loop_key = {};
     let inifinite = schedule[schedule.length - 1] === true;
     (async () => {
         while (dts.alive) {
@@ -317,16 +317,53 @@ Knimation.animate = function (dom, schedule) {
                 if (!fwvs) {
                     let task = schedule[i];
                     let type = typeof task;
-                    await new Promise((resolve, reject) => {
+                    let resolved_data = await new Promise((resolve, reject) => {
                         if (dts.alive) {
                             if (type === 'function') {
                                 if (task.length) {
-                                    task(resolve, reject);
+                                    let lkey = {};
+                                    Object.keys(loop_key).forEach(key => {
+                                        lkey[key] = loop_key[key].full - loop_key[key].counter;
+                                    });
+                                    task(resolve, lkey);
                                 } else {
                                     (() => {
                                         task();
                                         resolve();
                                     })();
+                                }
+                            }
+                            else if (type === 'string') {
+                                let tsk = task.trim();
+                                if (tsk.match(/^\<@[a-z]+\:[0-9]+\>$/g)) {
+                                    let key = (tsk.split(':')[0].split('<@')[1]);
+                                    let goto_ = Number(tsk.split(':')[1].split('>')[0]);
+                                    if (key && loop_key[key] === undefined) {
+                                        loop_key[key] = {
+                                            full: goto_,
+                                            counter: goto_,
+                                            gotono: i
+                                        };
+                                    }
+                                    if (key && loop_key[key] !== undefined) {
+                                        loop_key[key].counter--;
+                                    }
+                                    resolve();
+                                }
+                                else if (tsk.match(/^\<\/@[a-z]+\>$/g)) {
+                                    let key = (tsk.split('@')[1].split('>')[0]);
+                                    let rss = false;
+                                    if (key && loop_key[key] !== undefined) {
+                                        if (loop_key[key].counter > 0) {
+                                            rss = true;
+                                            resolve(loop_key[key].gotono);
+                                        } else {
+                                            delete loop_key[key];
+                                        }
+                                    }
+                                    if (!rss) {
+                                        resolve();
+                                    }
                                 }
                             }
                             else if (type === 'number') {
@@ -441,6 +478,17 @@ Knimation.animate = function (dom, schedule) {
                     if (task.complete) {
                         task.complete();
                     }
+                    if (task.goto !== undefined) {
+                        if (task.goto < 0) { task.goto = schedule.length + task.goto; }
+                        i = task.goto - 1;
+                        if (i < -1) { i = -1; }
+                    }
+                    // console.log('resolved_data', schedule[i], resolved_data);
+                    if (resolved_data !== undefined && (typeof resolved_data) === 'number') {
+                        if (resolved_data < 0) { resolved_data = schedule.length + resolved_data; }
+                        i = resolved_data - 1;
+                        if (i < -1) { i = -1; }
+                    }
                 }
             }
             if (!inifinite) {
@@ -470,7 +518,7 @@ Knimation.Easing = {
     easeOutQuint: t => 1 + (--t) * t * t * t * t,
     easeInOutQuint: t => t < .5 ? 16 * t * t * t * t * t : 1 + 16 * (--t) * t * t * t * t
 };
-Knimation.basic_properties = ['style', 'duration', 'transform', 'ease', 'complete', 'everyframe'];
+Knimation.basic_properties = ['style', 'duration', 'transform', 'ease', 'complete', 'everyframe', 'goto'];
 Knimation.transform_properties = {
     px: ['translateX', 'translateY', 'translateZ', 'perspective'],
     deg: ['skewX', 'skewY', 'rotate', 'rotateX', 'rotateY', 'rotateZ'],

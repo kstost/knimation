@@ -3,9 +3,9 @@
 <head>
     <script async src="https://static.codepen.io/assets/embed/ei.js"></script>
     <script src="./knimation.js"></script>
-    <script src="./cocos2d-js-ksttool.js" charset="UTF-8"></script>
     <link href="https://fonts.googleapis.com/css?family=Space+Mono&display=swap" rel="stylesheet">
-
+    <link rel="stylesheet" href="./railscasts.css">
+    <script src="./highlight.min.js"></script>
     <script>
         let path = [];
         let txt = 'KNIMATION';
@@ -13,24 +13,10 @@
         function outerHeight(el) {
             var height = el.offsetHeight;
             var style = getComputedStyle(el);
-
             height += parseInt(style.marginTop) + parseInt(style.marginBottom);
             return height;
         }
         function fit_fontsize_to_pixel_scale(element, destination_pixel_size, direction) {
-            /*
-          
-            <div>안녕</div>
-          
-            이것의 font-size 를 정해줌으로써 높이를 120px에 맞추고싶다.
-            그렇다면 font-size 를 몇을 줘야 높이가 120px과 같게될까?
-          
-            그럴땐 
-            fit_fontsize_to_pixel_scale(element, 120, width); 라고 해주면 된다.
-            마지막 인자인 direction 를 false 로 하면 높이를 120에 맞게 해준다는 뜻이다.
-            true 로 하면 너비를 120에 맞추겠다는 뜻이다.
-          
-            */
             element.style.fontSize = '1px';
             let measure = direction ? function (el) {
                 let width = el.offsetWidth;
@@ -88,10 +74,12 @@
                 fit_fontsize_to_pixel_scale(element, dt - mgn, true);
                 return dt;
             }
+            let ratio = 0;
             let rbody = document.getElementById('rbody');
             let stage = document.getElementById('stage');
             let stage_moto_width = parseFloat(getComputedStyle(stage, null).width.replace("px", ""));
             let stage_moto_height = parseFloat(getComputedStyle(stage, null).height.replace("px", ""));
+            stage.style.top = stage_moto_height;
             let dot = (ch, pos) => {
                 let dd = document.createElement('div');
                 dd.innerText = ch;
@@ -106,15 +94,11 @@
                 }
                 stage.appendChild(dd);
                 return dd;
-            }
-            // let wcnt = 10;
-            // let whaba = stage_moto_width / wcnt;
+            };
             txt.split('').map((ch, i) => {
                 let dde = dot(ch, { x: (20 * i), y: 100 });
                 txtl.push(dde);
-
-            })
-
+            });
             txtl.map((element, i) => {
                 let width = char_width(element);
                 let toggle = true;
@@ -130,7 +114,6 @@
                             r();
                         }
                     },
-                    // { scale: 1, duration: 10000 }, // 주석..
                     { top: 30, rotate: 180, duration: speed },
                     { top: -30, rotate: 180, duration: speed },
                     { scale: [1, 1], duration: 1 },
@@ -139,57 +122,8 @@
                     true
                 ])
             })
-            // for (let i = 0; i < wcnt; i++) {
-
-            // }
-            if (false) {
-                setInterval(() => {
-                    [
-                        ['k', [{ "x": 15, "y": 15 }, { "x": 20, "y": 181 }, { "x": 21, "y": 98 }, { "x": 84, "y": 14 }, { "x": 22, "y": 99 }, { "x": 85, "y": 178 }]],
-                        ['n', [{ "x": 115, "y": 185 }, { "x": 115, "y": 85 }, { "x": 131, "y": 111 }, { "x": 148, "y": 85 }, { "x": 169, "y": 83 }, { "x": 180, "y": 107 }, { "x": 172, "y": 188 }]],
-                        ['i', [{ "x": 208, "y": 72 }, { "x": 204, "y": 190 }]],
-                        ['m', [{ "x": 234, "y": 188 }, { "x": 231, "y": 89 }, { "x": 253, "y": 77 }, { "x": 271, "y": 94 }, { "x": 272, "y": 189 }, { "x": 274, "y": 97 }, { "x": 298, "y": 77 }, { "x": 315, "y": 99 }, { "x": 314, "y": 187 }]],
-                        ['a', [{ "x": 425, "y": 187 }, { "x": 389, "y": 83 }, { "x": 347, "y": 109 }, { "x": 347, "y": 185 }, { "x": 393, "y": 185 }, { "x": 410, "y": 146 }]],
-                        ['t', [{ "x": 417, "y": 74 }, { "x": 488, "y": 73 }, { "x": 455, "y": 76 }, { "x": 459, "y": 192 }]],
-                        ['i', [{ "x": 502, "y": 193 }, { "x": 513, "y": 90 }]],
-                        ['o', [{ "x": 546, "y": 195 }, { "x": 526, "y": 174 }, { "x": 525, "y": 148 }, { "x": 534, "y": 112 }, { "x": 551, "y": 91 }, { "x": 571, "y": 103 }, { "x": 589, "y": 116 }, { "x": 589, "y": 145 }, { "x": 581, "y": 176 }, { "x": 566, "y": 197 }]],
-                        ['n', [{ "x": 599, "y": 195 }, { "x": 608, "y": 107 }, { "x": 610, "y": 122 }, { "x": 626, "y": 108 }, { "x": 640, "y": 116 }, { "x": 642, "y": 161 }, { "x": 639, "y": 198 }]]
-                    ].forEach(ad => {
-                        let sc = ad[1];
-                        let dt = dot();
-                        let few = [];
-                        sc.map((dd, i) => {
-                            let next = sc[i + 1];
-                            if (next) {
-                                let sf = {
-                                    left: [dd.x, next.x],
-                                    top: [dd.y, next.y],
-                                    duration: 1000,
-                                };
-                                few.push(sf);
-                            }
-                        });
-                        few.push(() => {
-                            dt.parentNode.removeChild(dt);
-                        });
-                        // console.log(few);
-                        Knimation(dt, few);
-
-                    });
-                }, 1000);
-            }
-
-            // document.getElementById('stage').style,wid
-            // console.log();
-            document.getElementById('stage').style.top = 200;
-
-            let ratio = 0;
-
-
-
             document.body.onresize = () => {
                 ratio = document.body.clientWidth / stage_moto_width;
-                // let ddf = parseFloat(getComputedStyle(stage, null).width.replace("px", "")) * ratio;
                 if (true) {
                     let ddf = stage_moto_width * ratio;
                     stage.style.marginLeft = (ddf - stage_moto_width) / 2;
@@ -198,15 +132,8 @@
                 if (true) {
                     let ddf = stage_moto_height * ratio;
                     stage.style.marginTop = ((ddf - stage_moto_height) / 2) - (stage_moto_height);
-                    // stage.style.transform = 'scale(' + ratio + ')';
                 }
-                // stage.style.position = 'absolute';
-                // stage.style.left= 0;
-                // console.log(document.body.clientHeight);
-                // console.log(document.body.clientWidth);
-                // rbody.style.marginTop = 200*ratio;
                 document.body.style.marginTop = 200 * ratio;
-
             };
             document.body.onresize();
             window.scroll(0, 0);
@@ -232,7 +159,6 @@
 
         .stage {
             border: 0px solid red;
-            /* margin: auto; */
             padding: 0px;
             position: absolute;
             width: 700;
@@ -244,14 +170,40 @@
             background-color: black;
             color: white;
         }
+        .github a {
+            color: yellow;
+        }
+        .github {
+            background-color: #222;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom:10px;
+        }
+
+        .npm {
+            background-color: #222;
+            padding: 10px;
+            border-radius: 10px;
+
+        }
+
+        .linkbox {
+            padding: 10px;
+        }
     </style>
 </head>
 
 <body>
     <div class='stage' id='stage'> </div>
     <div id='rbody'>
-        ABCD
-        <!--
+        <div class='linkbox'>
+            <div class="github">
+                <a href='https://github.com/kstost/knimation'>https://github.com/kstost/knimation</a>
+            </div>
+            <div class="npm">
+                npm intall knimation
+            </div>
+        </div>
         <p class="codepen" data-height="265" data-theme-id="default" data-default-tab="js,result" data-user="cssbaby"
             data-slug-hash="vYOXLdQ"
             style="height: 265px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;"
@@ -371,10 +323,21 @@
                     RwPGjmx</a> by jinji (<a href="https://codepen.io/cssbaby">@cssbaby</a>)
                 on <a href="https://codepen.io">CodePen</a>.</span>
         </p>
-        -->
+
+        <p class="codepen" data-height="265" data-theme-id="default" data-default-tab="js,result" data-user="cssbaby"
+            data-slug-hash="poJEVBE"
+            style="height: 265px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;"
+            data-pen-title="poJEVBE">
+            <span>See the Pen <a href="https://codepen.io/cssbaby/pen/poJEVBE">
+                    poJEVBE</a> by jinji (<a href="https://codepen.io/cssbaby">@cssbaby</a>)
+                on <a href="https://codepen.io">CodePen</a>.</span>
+        </p>
+
     </div>
-
-
+    <!--
+    <pre><code class="html"></code></pre>
+    <script>hljs.initHighlightingOnLoad();</script>
+    -->
 </body>
 
 </html>

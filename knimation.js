@@ -519,12 +519,12 @@ Knimation.animate = function (d_list, schedule) {
                         dts.time_test.forEach(d => {
                             acc += d;
                         });
-                        console.log(acc / dts.time_test.length);
+                        // console.log(acc / dts.time_test.length);
                     }
                     if (task.complete) {
                         task.complete();
                     }
-                    console.log(112);
+                    // console.log(112);
                     if (task.goto !== undefined) {
                         if (task.goto < 0) { task.goto = schedule.length + task.goto; }
                         i = task.goto - 1;

@@ -401,7 +401,7 @@ Knimation.animate = function (d_list, schedule) {
                                 let end_count = 0;
                                 function endCall() {
                                     end_count++;
-                                    return d_list.length * (style_keys.length + (transform_keys.length ? 1 : 0)) === end_count;
+                                    return d_list.length * (style_keys.length + (transform_keys.length ? 1 : 0)) <= end_count;
                                 }
                                 let ease_function = Knimation.Easing[task.ease ? task.ease : 'linear'];
                                 let style_keys = task.style ? Object.keys(task.style) : [];
@@ -468,6 +468,13 @@ Knimation.animate = function (d_list, schedule) {
                                                     let ease_ratio = ease_function ? ease_function(spent_ratio) : spent_ratio;
                                                     let calc = distance_value.start + distance_value.distv * ease_ratio;
                                                     let cccl = Number((calc).toFixed(4));
+                                                    if (key === 'opacity') {
+                                                        if (cccl < 0) { cccl = 0; }
+                                                        if (cccl > 1) { cccl = 1; }
+                                                    }
+                                                    if (key === 'width' || key === 'height') {
+                                                        if (cccl < 0) { cccl = 0; }
+                                                    }
                                                     dom.style[key] = cccl + units;
                                                     if (ani_count === 0 && task.everyframe) {
                                                         function calcul(start, end) {
@@ -517,6 +524,7 @@ Knimation.animate = function (d_list, schedule) {
                     if (task.complete) {
                         task.complete();
                     }
+                    console.log(112);
                     if (task.goto !== undefined) {
                         if (task.goto < 0) { task.goto = schedule.length + task.goto; }
                         i = task.goto - 1;

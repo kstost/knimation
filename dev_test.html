@@ -4,19 +4,23 @@
     <script src="./knimation.js"></script>
     <script>
         window.onload = () => {
-            let ss = document.getElementById('ss');
-            let bb = document.getElementById('bb');
-            //,bb
-            Knimation([ss,bb], [
+            Knimation(document.body, [
                 {
-                    opacity: [1, 0],
-                    everyframe: c => {
-                        console.log(c(100, 50));
+                    opacity: 1,
+                },
+                {
+                    opacity: 1,
+                },
+                {
+                    opacity: -0.5,
+                },
+                {
+                    everyframe: r => {
                     },
-                    ease: 'easeInCubic',
-                    duration: 1000
+                    goto: 0
                 },
             ]);
+
         };
     </script>
 </head>

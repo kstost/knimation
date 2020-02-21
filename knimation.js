@@ -9,9 +9,11 @@ let Knimation = function (cb, duration) {
         pnt.cb = cb;
         pnt.spent_time = 0;
         pnt.running = false;
+        Knimation.unique_counter = Knimation.unique_counter === undefined ? 0 : Knimation.unique_counter + 1;
+        pnt.process_id = Knimation.unique_counter;
         pnt.resume();
     } else {
-        return Knimation.animate(cb, duration);
+        return Knimation.animate(Array.isArray(cb) ? cb : [cb], duration);
     }
 }
 Knimation.prototype = {
@@ -19,7 +21,9 @@ Knimation.prototype = {
         let pnt = this;
         if (!pnt.running) {
             pnt.running = true;
-            pnt.cb_call(0); // 시작하자마자 한 프레임 실행. dt 0인건 이전프레임이 없으니까
+            if (false) {
+                pnt.cb_call(0); // 시작하자마자 한 프레임 실행. dt 0인건 이전프레임이 없으니까
+            }
             pnt.run();
         }
         return pnt;
@@ -108,7 +112,7 @@ Knimation.remove_item = function (dts, ani_proc) {
         }
     }
 }
-Knimation.animate = function (dom, schedule) {
+Knimation.animate = function (d_list, schedule) {
     let performance_test = false;
     let dts = {
         playing: true,
@@ -268,8 +272,8 @@ Knimation.animate = function (dom, schedule) {
         } else {
             if (typeof valraw === 'string') {
                 if (valraw.length === 0) {
-                    if (key === 'top') { start = dom.offsetTop; }
-                    if (key === 'left') { start = dom.offsetLeft; }
+                    if (key === 'top' || key === 'bottom') { start = dom.offsetTop; }
+                    if (key === 'left' || key === 'right') { start = dom.offsetLeft; }
                     if (key === 'opacity') { start = 1; }
                     if (key === 'width') {
                         start = parseFloat(getComputedStyle(dom, null).width.replace("px", ""));
@@ -397,67 +401,102 @@ Knimation.animate = function (dom, schedule) {
                                 let end_count = 0;
                                 function endCall() {
                                     end_count++;
-                                    return style_keys.length + (transform_keys.length ? 1 : 0) === end_count;
+                                    return d_list.length * (style_keys.length + (transform_keys.length ? 1 : 0)) === end_count;
                                 }
                                 let ease_function = Knimation.Easing[task.ease ? task.ease : 'linear'];
                                 let style_keys = task.style ? Object.keys(task.style) : [];
                                 let transform_keys = task.transform ? Object.keys(task.transform) : [];
                                 let thread_count = 0;
-                                if (task.transform) {
-                                    let eved = {};
-                                    let ani_count = thread_count++;
-                                    let ani_proc = new Knimation((delta_time, spent_time, spent_ratio, object_pointer) => {
-                                        if (dts.alive) {
-                                            let current_dom_transform = dom.style.transform;
-                                            let cdt_parsed = transform_parse(current_dom_transform);
-                                            for (let j = 0; j < transform_keys.length; j++) {
-                                                let key = transform_keys[j];
-                                                let first = !eved[key];
-                                                eved[key] = !eved[key] ? val_extractor(task.transform[key], cdt_parsed[key], dom, key) : eved[key];
-                                                if (first && !eved[key].uux) {
-                                                    if (Knimation.transform_properties.px.includes(key)) {
-                                                        eved[key].uux = 'px';
-                                                    }
-                                                    else if (Knimation.transform_properties.deg.includes(key)) {
-                                                        eved[key].uux = 'deg';
-                                                    }
-                                                }
-                                                let distance_value = calc_dist(eved[key].start, eved[key].end__);
-                                                let ease_ratio = ease_function ? ease_function(spent_ratio) : spent_ratio;
-                                                let calc = distance_value.start + distance_value.distv * ease_ratio;
-                                                let cccl = Number((calc).toFixed(4));
-                                                cdt_parsed[key] = [[cccl, eved[key].uux]];
-                                            }
-                                            dom.style.transform = transform_stringify(cdt_parsed);
-                                            if (ani_count === 0 && task.everyframe) { task.everyframe(spent_ratio); }
-                                        }
-                                        common_proc(dts, spent_ratio, object_pointer);
-                                    }, task.duration);
-                                    common_proc(dts, null, ani_proc, resolve, endCall);
-                                }
-                                if (task.style) {
-                                    for (let j = 0; j < style_keys.length; j++) {
-                                        let key = style_keys[j];
-                                        let eved = val_extractor(task.style[key], dom.style[key], dom, key);
-                                        let distance_value = calc_dist(eved.start, eved.end__);
-                                        let att_needs_px = Knimation.att_for_px;
-                                        let units = eved.uux;//
-                                        if (!units && att_needs_px) {
-                                            units = (att_needs_px.includes(key)) ? 'px' : '';
-                                        }
+                                d_list.forEach(dom => {
+                                    if (task.transform) {
+                                        let eved = {};
                                         let ani_count = thread_count++;
                                         let ani_proc = new Knimation((delta_time, spent_time, spent_ratio, object_pointer) => {
                                             if (dts.alive) {
-                                                let ease_ratio = ease_function ? ease_function(spent_ratio) : spent_ratio;
-                                                let calc = distance_value.start + distance_value.distv * ease_ratio;
-                                                let cccl = Number((calc).toFixed(4));
-                                                dom.style[key] = cccl + units;
-                                                if (ani_count === 0 && task.everyframe) { task.everyframe(spent_ratio); }
+                                                let current_dom_transform = dom.style.transform;
+                                                let cdt_parsed = transform_parse(current_dom_transform);
+                                                for (let j = 0; j < transform_keys.length; j++) {
+                                                    let key = transform_keys[j];
+                                                    let first = !eved[key];
+                                                    eved[key] = !eved[key] ? val_extractor(task.transform[key], cdt_parsed[key], dom, key) : eved[key];
+                                                    if (first && !eved[key].uux) {
+                                                        if (Knimation.transform_properties.px.includes(key)) {
+                                                            eved[key].uux = 'px';
+                                                        }
+                                                        else if (Knimation.transform_properties.deg.includes(key)) {
+                                                            eved[key].uux = 'deg';
+                                                        }
+                                                    }
+                                                    let distance_value = calc_dist(eved[key].start, eved[key].end__);
+                                                    let ease_ratio = ease_function ? ease_function(spent_ratio) : spent_ratio;
+                                                    let calc = distance_value.start + distance_value.distv * ease_ratio;
+                                                    let cccl = Number((calc).toFixed(4));
+                                                    cdt_parsed[key] = [[cccl, eved[key].uux]];
+                                                }
+                                                dom.style.transform = transform_stringify(cdt_parsed);
+                                                if (ani_count === 0 && task.everyframe) {
+                                                    function calcul(start, end) {
+                                                        return start + ((end - start) * ease_ratio);
+                                                    }
+                                                    task.everyframe(calcul, ease_ratio);
+                                                }
                                             }
                                             common_proc(dts, spent_ratio, object_pointer);
                                         }, task.duration);
                                         common_proc(dts, null, ani_proc, resolve, endCall);
                                     }
+                                });
+                                d_list.forEach(dom => {
+                                    if (task.style) {
+                                        for (let j = 0; j < style_keys.length; j++) {
+                                            let key = style_keys[j];
+                                            if (key === 'left' || key === 'top' || key === 'right' || key === 'bottom') {
+                                                if (dom.style.position === '') {
+                                                    dom.style.position = 'absolute';
+                                                }
+                                            }
+                                            let eved = val_extractor(task.style[key], dom.style[key], dom, key);
+                                            let distance_value = calc_dist(eved.start, eved.end__);
+                                            let att_needs_px = Knimation.att_for_px;
+                                            let units = eved.uux;//
+                                            if (!units && att_needs_px) {
+                                                units = (att_needs_px.includes(key)) ? 'px' : '';
+                                            }
+                                            let ani_count = thread_count++;
+                                            let ani_proc = new Knimation((delta_time, spent_time, spent_ratio, object_pointer) => {
+                                                if (dts.alive) {
+                                                    let ease_ratio = ease_function ? ease_function(spent_ratio) : spent_ratio;
+                                                    let calc = distance_value.start + distance_value.distv * ease_ratio;
+                                                    let cccl = Number((calc).toFixed(4));
+                                                    dom.style[key] = cccl + units;
+                                                    if (ani_count === 0 && task.everyframe) {
+                                                        function calcul(start, end) {
+                                                            return start + ((end - start) * ease_ratio);
+                                                        }
+                                                        task.everyframe(calcul, ease_ratio);
+                                                    }
+                                                }
+                                                common_proc(dts, spent_ratio, object_pointer);
+                                            }, task.duration);
+                                            common_proc(dts, null, ani_proc, resolve, endCall);
+                                        }
+                                    }
+                                });
+                                if (thread_count === 0) {
+                                    let ani_count = thread_count++;
+                                    let ani_proc = new Knimation((delta_time, spent_time, spent_ratio, object_pointer) => {
+                                        if (dts.alive) {
+                                            let ease_ratio = ease_function ? ease_function(spent_ratio) : spent_ratio;
+                                            if (ani_count === 0 && task.everyframe) {
+                                                function calcul(start, end) {
+                                                    return start + ((end - start) * ease_ratio);
+                                                }
+                                                task.everyframe(calcul, ease_ratio);
+                                            }
+                                        }
+                                        common_proc(dts, spent_ratio, object_pointer);
+                                    }, task.duration);
+                                    common_proc(dts, null, ani_proc, resolve, endCall);
                                 }
                                 if (!dts.ani_list) {
                                     // 아무런 애니메이션 프로세스도 등록되지 않았을때 그냥 빠르게 패스..

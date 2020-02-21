@@ -1,6 +1,6 @@
 {
   "name": "knimation",
-  "version": "0.2.7",
+  "version": "0.2.9",
   "description": "you can make easily animation with this",
   "main": "knimation.js",
   "repository": {

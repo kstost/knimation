@@ -864,9 +864,17 @@ Knimation(box, [
 Knimation(box, [
     // everyframe 키로 함수를 전달하게 되면
     // 매 프레임마다 이 함수를 실행하며 이 함수는 p 라는 인자를 받습니다
-    // p는 현재 애니메이션의 진행 %입니다 duration 이 10000이고 현재 5초째 진행중이면 p는 0.5입니다
-    { top: 100, duration: 10000, everyframe: p=>{
-        box.innerText = p;
+    // p는 함수이며 인자로는 숫자 두개가 들어갑니다
+    // p(100,110) 이렇게 넣어주게되면 총 duration이 1000이고 현재 300이 지났다면 103을 리턴해줍니다
+    // 만약 ease 가 적용된 경우라면 그에 맞는 값을 내어줍니다
+    { top: 100, duration: 4000, everyframe: p=>{
+
+        box.innerText = p(100, 110);
+
+        // 이렇게 응용
+        let red = p(0, 255);
+        box.style.backgroundColor = `rgb(${red}, 115, 220)`;
+
     } },
     { top: -100, duration: 500 },
     true
@@ -875,9 +883,17 @@ Knimation(box, [
 Knimation(box, [
     // everyframe 키로 함수를 전달하게 되면
     // 매 프레임마다 이 함수를 실행하며 이 함수는 p 라는 인자를 받습니다
-    // p는 현재 애니메이션의 진행 %입니다 duration 이 10000이고 현재 5초째 진행중이면 p는 0.5입니다
-    { top: 100, duration: 10000, everyframe: p=>{
-        box.innerText = p;
+    // p는 함수이며 인자로는 숫자 두개가 들어갑니다
+    // p(100,110) 이렇게 넣어주게되면 총 duration이 1000이고 현재 300이 지났다면 103을 리턴해줍니다
+    // 만약 ease 가 적용된 경우라면 그에 맞는 값을 내어줍니다
+    { top: 100, duration: 4000, everyframe: p=>{
+
+        box.innerText = p(100, 110);
+
+        // 이렇게 응용
+        let red = p(0, 255);
+        box.style.backgroundColor = `rgb(${red}, 115, 220)`;
+
     } },
     { top: -100, duration: 500 },
     true
@@ -1055,6 +1071,41 @@ Knimation(box, [
 </div>
     
 
+
+
+
+    
+
+<div class='container'>
+<pre><code class="html">&lt;div id="box20" class="selev"&gt;&lt;/div&gt;
+&lt;div id="box21" style="left:100px;" class="selev"&gt;&lt;/div&gt;
+</code></pre>
+<pre style="display:none;">&lt;div id="box20" class="selev"&gt;&lt;/div&gt;
+&lt;div id="box21" style="left:100px;" class="selev"&gt;&lt;/div&gt;</pre>
+<pre><code class="javascript">let box = document.getElementById('box20');
+let box2 = document.getElementById('box21');
+// 여러개의 엘리먼트를 []에 담아서 함께 일괄적용 가능합니다
+Knimation([box, box2], [
+    { opacity: -1, rotate:10, duration: 500 },
+    { opacity: 1, duration: 500 },
+    true,
+]);</code></pre>
+<pre style="display:none;">let box = document.getElementById('box20');
+let box2 = document.getElementById('box21');
+// 여러개의 엘리먼트를 []에 담아서 함께 일괄적용 가능합니다
+Knimation([box, box2], [
+    { opacity: -1, rotate:10, duration: 500 },
+    { opacity: 1, duration: 500 },
+    true,
+]);</pre>
+<div class='sub_container'>
+    <div class='sandbox'></div>
+    <button class='myButton'>RUN</button>
+</div>
+</div>
+    
+
+        
         
 
     </div>

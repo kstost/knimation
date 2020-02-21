@@ -5,23 +5,17 @@
     <script>
         window.onload = () => {
             let ss = document.getElementById('ss');
-            Knimation(ss, [
-                1000,
-                '<@k:3>',
-                '<@kk:3>',
-                (r, i) => {
-                    console.log(i.k, '|', i.kk);
-                    r();
+            let bb = document.getElementById('bb');
+            //,bb
+            Knimation([ss,bb], [
+                {
+                    opacity: [1, 0],
+                    everyframe: c => {
+                        console.log(c(100, 50));
+                    },
+                    ease: 'easeInCubic',
+                    duration: 1000
                 },
-                '</@kk>',
-                '</@k>',
-                { goto: 0 },
-                () => {
-                    console.log('end1');
-                },
-                () => {
-                    console.log('end');
-                }
             ]);
         };
     </script>
@@ -29,6 +23,7 @@
 
 <body>
     <span id='ss'>A</span>
+    <span id='bb'>B</span>
 
 </body>
 

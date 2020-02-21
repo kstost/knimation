@@ -1,4 +1,4 @@
-## Demo
+## Demo (README.md 보다는 아래 데모를 보세요)
 [Demo](https://kstost.github.io/knimation/)
 
 ## Install

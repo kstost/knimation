@@ -4,22 +4,36 @@
     <script src="./knimation.js"></script>
     <script>
         window.onload = () => {
-            Knimation(document.body, [
-                {
-                    opacity: 1,
-                },
-                {
-                    opacity: 1,
-                },
-                {
-                    opacity: -0.5,
-                },
-                {
-                    everyframe: r => {
-                    },
-                    goto: 0
-                },
+            ss = document.getElementById('ss');
+            bb = document.getElementById('bb');
+            a = Knimation([ss, bb], [
+                { opacity: [0, 1], duration: 2000 },
+                () => {
+                    console.log(123);
+                }
             ]);
+            b = Knimation([ss], [
+                { top: 100, duration: 1000 },
+                () => {
+                    console.log(123);
+                }
+            ]);
+            setTimeout(() => {
+                ss.custom_box.Knimation.remove_dts_from_dom(ss, b);
+                ss.custom_box.Knimation.remove_dts_from_dom(ss, a);
+                ss.custom_box.Knimation.remove_dts_from_dom(bb, a);
+                console.log(ss.custom_box);
+                console.log(bb.custom_box);
+                console.log(b);
+            }, 400);
+            // setTimeout(() => {
+            //     console.log(ss.custom_box);
+            //     console.log(bb.custom_box);
+            // }, 11000);
+            // setTimeout(() => {
+            //     console.log(ss.custom_box);
+            //     console.log(bb.custom_box);
+            // }, 21000);
 
         };
     </script>

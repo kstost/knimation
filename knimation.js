@@ -130,6 +130,10 @@ Knimation.animate = function (d_list, schedule) {
             } else {
                 cb && cb();
             }
+            d_list.forEach(don => {
+                Knimation.remove_dts_from_dom(don, dts);
+            });
+            // console.log('DTS destroy');
         },
         pause() {
             if (this.playing) {
@@ -152,6 +156,12 @@ Knimation.animate = function (d_list, schedule) {
             }
         },
     };
+    d_list.forEach(d_ => {
+        if (!d_.custom_box) { d_.custom_box = {}; }
+        if (!d_.custom_box.dtss) { d_.custom_box.dtss = []; }
+        d_.custom_box.dtss.push(dts);
+        d_.custom_box.Knimation = Knimation;
+    });
     function style_attr_destruct(stt) {
         var rtt = {};
         var df = stt.match(/([0-9]|[\.]|[\-])+/);
@@ -542,6 +552,9 @@ Knimation.animate = function (d_list, schedule) {
                 break;
             }
         }
+        d_list.forEach(dm => {
+            Knimation.remove_dts_from_dom(dm, dts);
+        });
         dts.alive = false;
         if (dts.destroy_cb) {
             dts.destroy_cb();
@@ -549,6 +562,27 @@ Knimation.animate = function (d_list, schedule) {
         // console.log('END');
     })();
     return dts;
+};
+Knimation.remove_dts_from_dom = function (dm, dts) {
+    if (dm.custom_box && dm.custom_box.dtss) {
+        let lst = dm.custom_box.dtss;
+        while (true) {
+            let ends = false;
+            for (let i = 0; i < lst.length; i++) {
+                if (dts === undefined || dts === lst[i]) {
+                    lst.splice(i, 1)[0].destroy();
+                    ends = true;
+                    break;
+                }
+            }
+            if (!ends) {
+                break;
+            }
+        }
+        if (dm.custom_box.dtss && dm.custom_box.dtss.length === 0) {
+            delete dm.custom_box.dtss;
+        }
+    }
 };
 Knimation.Easing = {
     linear: t => t,

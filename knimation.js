@@ -521,7 +521,7 @@ Knimation.animate = function (d_list, schedule) {
                                     }, task.duration);
                                     common_proc(dts, null, ani_proc, resolve, endCall);
                                 }
-                                if (!dts.ani_list) {
+                                if (!dts.ani_list || (dts.ani_list && dts.ani_list.length === 0)) {
                                     // 아무런 애니메이션 프로세스도 등록되지 않았을때 그냥 빠르게 패스..
                                     resolve();
                                 }

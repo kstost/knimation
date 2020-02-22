@@ -5,35 +5,16 @@
     <script>
         window.onload = () => {
             ss = document.getElementById('ss');
-            bb = document.getElementById('bb');
-            a = Knimation([ss, bb], [
-                { opacity: [0, 1], duration: 2000 },
-                () => {
-                    console.log(123);
+            // bb = document.getElementById('bb');
+
+            ss.style.position='absolute';
+            a = Knimation([ss], [
+                { rotate: [10, 'rad'], duration: 1000 },
+                { goto: 0 },
+                ()=>{
+                    console.log('ennn');
                 }
             ]);
-            b = Knimation([ss], [
-                { top: 100, duration: 1000 },
-                () => {
-                    console.log(123);
-                }
-            ]);
-            setTimeout(() => {
-                ss.custom_box.Knimation.remove_dts_from_dom(ss, b);
-                ss.custom_box.Knimation.remove_dts_from_dom(ss, a);
-                ss.custom_box.Knimation.remove_dts_from_dom(bb, a);
-                console.log(ss.custom_box);
-                console.log(bb.custom_box);
-                console.log(b);
-            }, 400);
-            // setTimeout(() => {
-            //     console.log(ss.custom_box);
-            //     console.log(bb.custom_box);
-            // }, 11000);
-            // setTimeout(() => {
-            //     console.log(ss.custom_box);
-            //     console.log(bb.custom_box);
-            // }, 21000);
 
         };
     </script>
@@ -41,7 +22,7 @@
 
 <body>
     <span id='ss'>A</span>
-    <span id='bb'>B</span>
+    <!-- <span id='bb'>B</span> -->
 
 </body>
 

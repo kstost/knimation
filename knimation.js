@@ -423,6 +423,7 @@ Knimation.animate = function (d_list, schedule) {
                                         let ani_count = thread_count++;
                                         let ani_proc = new Knimation((delta_time, spent_time, spent_ratio, object_pointer) => {
                                             if (dts.alive) {
+                                                let ease_ratio = ease_function ? ease_function(spent_ratio) : spent_ratio;
                                                 let current_dom_transform = dom.style.transform;
                                                 let cdt_parsed = transform_parse(current_dom_transform);
                                                 for (let j = 0; j < transform_keys.length; j++) {
@@ -438,7 +439,6 @@ Knimation.animate = function (d_list, schedule) {
                                                         }
                                                     }
                                                     let distance_value = calc_dist(eved[key].start, eved[key].end__);
-                                                    let ease_ratio = ease_function ? ease_function(spent_ratio) : spent_ratio;
                                                     let calc = distance_value.start + distance_value.distv * ease_ratio;
                                                     let cccl = Number((calc).toFixed(4));
                                                     cdt_parsed[key] = [[cccl, eved[key].uux]];

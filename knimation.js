@@ -405,18 +405,24 @@ Knimation.animate = function (d_list, schedule) {
                                         delete task[key];
                                     });
                                 }
-                                if (!task.duration) {
-                                    task.duration = 500;
-                                }
                                 let end_count = 0;
+                                function stayle_trans_count() {
+                                    return (style_keys.length + (transform_keys.length ? 1 : 0));
+                                }
                                 function endCall() {
                                     end_count++;
-                                    return d_list.length * (style_keys.length + (transform_keys.length ? 1 : 0)) <= end_count;
+                                    return d_list.length * stayle_trans_count() <= end_count;
                                 }
                                 let ease_function = Knimation.Easing[task.ease ? task.ease : 'linear'];
                                 let style_keys = task.style ? Object.keys(task.style) : [];
                                 let transform_keys = task.transform ? Object.keys(task.transform) : [];
                                 let thread_count = 0;
+                                if (!task.duration) {
+                                    task.duration = 500;
+                                    if (false && stayle_trans_count() === 0) {
+                                        task.duration = 1;
+                                    }
+                                }
                                 d_list.forEach(dom => {
                                     if (task.transform) {
                                         let eved = {};
@@ -499,7 +505,7 @@ Knimation.animate = function (d_list, schedule) {
                                         }
                                     }
                                 });
-                                if (thread_count === 0) {
+                                if (thread_count === 0 && task.everyframe) {
                                     let ani_count = thread_count++;
                                     let ani_proc = new Knimation((delta_time, spent_time, spent_ratio, object_pointer) => {
                                         if (dts.alive) {

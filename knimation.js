@@ -118,6 +118,7 @@ Knimation.animate = function (d_list, schedule) {
         playing: true,
         alive: true,
         destroy(cb) {
+            this.pause();
             if (this.alive) {
                 this.alive = false;
                 this.destroy_cb = cb;
@@ -133,7 +134,6 @@ Knimation.animate = function (d_list, schedule) {
             d_list.forEach(don => {
                 Knimation.remove_dts_from_dom(don, dts);
             });
-            // console.log('DTS destroy');
         },
         pause() {
             if (this.playing) {

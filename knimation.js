@@ -537,20 +537,22 @@ Knimation.animate = function (d_list, schedule) {
                         });
                         // console.log(acc / dts.time_test.length);
                     }
-                    if (task.complete) {
-                        task.complete();
-                    }
-                    // console.log(112);
-                    if (task.goto !== undefined) {
-                        if (task.goto < 0) { task.goto = schedule.length + task.goto; }
-                        i = task.goto - 1;
-                        if (i < -1) { i = -1; }
-                    }
-                    // console.log('resolved_data', schedule[i], resolved_data);
-                    if (resolved_data !== undefined && (typeof resolved_data) === 'number') {
-                        if (resolved_data < 0) { resolved_data = schedule.length + resolved_data; }
-                        i = resolved_data - 1;
-                        if (i < -1) { i = -1; }
+                    if (dts.alive) {
+                        if (task.complete) {
+                            task.complete();
+                        }
+                        // console.log(112);
+                        if (task.goto !== undefined) {
+                            if (task.goto < 0) { task.goto = schedule.length + task.goto; }
+                            i = task.goto - 1;
+                            if (i < -1) { i = -1; }
+                        }
+                        // console.log('resolved_data', schedule[i], resolved_data);
+                        if (resolved_data !== undefined && (typeof resolved_data) === 'number') {
+                            if (resolved_data < 0) { resolved_data = schedule.length + resolved_data; }
+                            i = resolved_data - 1;
+                            if (i < -1) { i = -1; }
+                        }
                     }
                 }
             }

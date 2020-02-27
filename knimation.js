@@ -435,13 +435,17 @@ Knimation.animate = function (d_list, schedule) {
                                         let ani_proc = new Knimation((delta_time, spent_time, spent_ratio, object_pointer) => {
                                             if (dts.alive) {
                                                 let ease_ratio = ease_function ? ease_function(spent_ratio) : spent_ratio;
-                                                let current_dom_transform = dom.style.transform;
-                                                let cdt_parsed = transform_parse(current_dom_transform);
+                                                let current_dom_transform = all_doms_svg ? null : dom.style.transform;
+                                                let cdt_parsed = all_doms_svg ? {} : transform_parse(current_dom_transform);
                                                 for (let j = 0; j < transform_keys.length; j++) {
                                                     let key = transform_keys[j];
                                                     let first = !eved[key];
-                                                    eved[key] = !eved[key] ? val_extractor(task.transform[key], cdt_parsed[key], dom, key) : eved[key];
-                                                    if (first && !eved[key].uux) {
+                                                    if (all_doms_svg) {
+                                                        eved[key] = !eved[key] ? val_extractor(task.transform[key], dom.transform(key), dom, key, all_doms_svg) : eved[key];
+                                                    } else {
+                                                        eved[key] = !eved[key] ? val_extractor(task.transform[key], cdt_parsed[key], dom, key) : eved[key];
+                                                    }
+                                                    if (!all_doms_svg && first && !eved[key].uux) {
                                                         if (Knimation.transform_properties.px.includes(key)) {
                                                             eved[key].uux = 'px';
                                                         }
@@ -452,9 +456,17 @@ Knimation.animate = function (d_list, schedule) {
                                                     let distance_value = calc_dist(eved[key].start, eved[key].end__);
                                                     let calc = distance_value.start + distance_value.distv * ease_ratio;
                                                     let cccl = Number((calc).toFixed(4));
-                                                    cdt_parsed[key] = [[cccl, eved[key].uux]];
+                                                    if (!all_doms_svg) {
+                                                        cdt_parsed[key] = [[cccl, eved[key].uux]];
+                                                    } else {
+                                                        cdt_parsed[key] = cccl;
+                                                    }
                                                 }
-                                                dom.style.transform = transform_stringify(cdt_parsed);
+                                                if (all_doms_svg) {
+                                                    dom.transform(cdt_parsed);
+                                                } else {
+                                                    dom.style.transform = transform_stringify(cdt_parsed);
+                                                }
                                                 if (ani_count === 0 && task.everyframe) {
                                                     function calcul(start, end) {
                                                         return start + ((end - start) * ease_ratio);

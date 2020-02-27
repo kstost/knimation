@@ -261,7 +261,7 @@ Knimation.animate = function (d_list, schedule) {
     }
     // function camelize(str) {
     // }
-    function val_extractor(val, valraw, dom, key) {
+    function val_extractor(val, valraw, dom, key, all_doms_svg) {
         let arrty = Array.isArray(val);
         let uux = '';
         if (arrty) {
@@ -280,38 +280,42 @@ Knimation.animate = function (d_list, schedule) {
         if (arrty) {
             start = val[0];
         } else {
-            if (typeof valraw === 'string') {
-                if (valraw.length === 0) {
-                    if (key === 'top' || key === 'bottom') { start = dom.offsetTop; }
-                    if (key === 'left' || key === 'right') { start = dom.offsetLeft; }
-                    if (key === 'opacity') { start = 1; }
-                    if (key === 'width') {
-                        start = parseFloat(getComputedStyle(dom, null).width.replace("px", ""));
-                    }
-                    if (key === 'height') {
-                        start = parseFloat(getComputedStyle(dom, null).height.replace("px", ""));
-                    }
-                }
-                if (start === undefined) {
-                    start = toPX(valraw.trim());
-                }
+            if (all_doms_svg) {
+                start = valraw;
             } else {
-                let value_as_nothing = 0;
-                if (valraw === undefined) {
-                    if (key === 'scale') {
-                        value_as_nothing = 1;
+                if (typeof valraw === 'string') {
+                    if (valraw.length === 0) {
+                        if (key === 'top' || key === 'bottom') { start = dom.offsetTop; }
+                        if (key === 'left' || key === 'right') { start = dom.offsetLeft; }
+                        if (key === 'opacity') { start = 1; }
+                        if (key === 'width') {
+                            start = parseFloat(getComputedStyle(dom, null).width.replace("px", ""));
+                        }
+                        if (key === 'height') {
+                            start = parseFloat(getComputedStyle(dom, null).height.replace("px", ""));
+                        }
                     }
-                    if (key === 'scaleX') {
-                        value_as_nothing = 1;
+                    if (start === undefined) {
+                        start = toPX(valraw.trim());
                     }
-                    if (key === 'scaleY') {
-                        value_as_nothing = 1;
+                } else {
+                    let value_as_nothing = 0;
+                    if (valraw === undefined) {
+                        if (key === 'scale') {
+                            value_as_nothing = 1;
+                        }
+                        if (key === 'scaleX') {
+                            value_as_nothing = 1;
+                        }
+                        if (key === 'scaleY') {
+                            value_as_nothing = 1;
+                        }
+                        if (key === 'scaleZ') {
+                            value_as_nothing = 1;
+                        }
                     }
-                    if (key === 'scaleZ') {
-                        value_as_nothing = 1;
-                    }
+                    start = valraw === undefined ? value_as_nothing : valraw[0][0];
                 }
-                start = valraw === undefined ? value_as_nothing : valraw[0][0];
             }
         }
         let end__ = arrty ? val[1] : start + val;
@@ -413,6 +417,7 @@ Knimation.animate = function (d_list, schedule) {
                                     end_count++;
                                     return d_list.length * stayle_trans_count() <= end_count;
                                 }
+                                let all_doms_svg = (d_list.filter(dom => Knimation.check_instance_of_SVGJS(dom)).length === d_list.length);
                                 let ease_function = Knimation.Easing[task.ease ? task.ease : 'linear'];
                                 let style_keys = task.style ? Object.keys(task.style) : [];
                                 let transform_keys = task.transform ? Object.keys(task.transform) : [];
@@ -467,11 +472,16 @@ Knimation.animate = function (d_list, schedule) {
                                         for (let j = 0; j < style_keys.length; j++) {
                                             let key = style_keys[j];
                                             if (key === 'left' || key === 'top' || key === 'right' || key === 'bottom') {
-                                                if (dom.style.position === '') {
+                                                if (!all_doms_svg && dom.style.position === '') {
                                                     dom.style.position = 'absolute';
                                                 }
                                             }
-                                            let eved = val_extractor(task.style[key], dom.style[key], dom, key);
+                                            let eved;
+                                            if (all_doms_svg) {
+                                                eved = val_extractor(task.style[key], dom.attr(key), dom, key, all_doms_svg);
+                                            } else {
+                                                eved = val_extractor(task.style[key], dom.style[key], dom, key);
+                                            }
                                             let distance_value = calc_dist(eved.start, eved.end__);
                                             let att_needs_px = Knimation.att_for_px;
                                             let units = eved.uux;//
@@ -491,7 +501,12 @@ Knimation.animate = function (d_list, schedule) {
                                                     if (key === 'width' || key === 'height') {
                                                         if (cccl < 0) { cccl = 0; }
                                                     }
-                                                    dom.style[key] = cccl + units;
+                                                    if (all_doms_svg) {
+                                                        dom.attr(key, cccl + units);
+
+                                                    } else {
+                                                        dom.style[key] = cccl + units;
+                                                    }
                                                     if (ani_count === 0 && task.everyframe) {
                                                         function calcul(start, end) {
                                                             return start + ((end - start) * ease_ratio);
@@ -570,6 +585,25 @@ Knimation.animate = function (d_list, schedule) {
         // console.log('END');
     })();
     return dts;
+};
+Knimation.check_instance_of_SVGJS = function (node) {
+    return (node => {
+        let svg;
+        try { svg = SVG; } catch{ return false; }
+        if (!svg) { return false; }
+        let list = Object.keys(svg);
+        for (let i = 0; i < list.length; i++) {
+            let key = list[i];
+            try {
+                let fd = SVG[key];
+                if (node instanceof fd) {
+                    return true;
+                    break;
+                }
+            } catch{ }
+        }
+        return false;
+    })(node);
 };
 Knimation.remove_dts_from_dom = function (dm, dts) {
     if (dm.custom_box && dm.custom_box.dtss) {

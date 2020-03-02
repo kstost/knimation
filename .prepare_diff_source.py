@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 import os, sys, hashlib, re, json, dateutil.parser, pytz
+# sudo pip3 install python-dateutil
+# sudo pip3 install pytz
 local_timezone = pytz.timezone('Asia/Seoul')
 
 def is_safe_name(fn): #qq
 	ddfe = fn.find('"') == -1 and fn.find("'") == -1 and fn.find("`") == -1
 	if not ddfe:
-		print "WRONG NAME: "+fn
+		print("WRONG NAME: "+fn)
 	return ddfe
 
 def copy_itm(pl1, dff, rrr=False): #qq
@@ -110,7 +112,7 @@ def compare_two_sources(compare_dir, nMode=False):
 		fde = list_files(compare_dir)
 		if False:
 			for nm in fde:
-				print nm
+				print(nm)
 		if len(fde) == 2:
 			cnt = 0
 			tail = '_'
@@ -151,7 +153,7 @@ def getGithubCredential():
 	else:
 		return ''
 def getExclude():
-	path = './exclude.json'
+	path = './.exclude.json'
 	if is_file(path):
 		return json.loads(shell_exec('cat "'+path+'"').strip())
 	else:
@@ -263,9 +265,9 @@ if len(sys.argv) == 3:
 				if line.find(':') > -1:
 					fnma = os.path.abspath(line.split(':')[0])
 					ffe[fnma] = fnma
-			print '\n'*100
-			print '-'*80
-			print '\n'*2
+			print('\n'*100)
+			print('-'*80)
+			print('\n'*2)
 
 			linemax = 0
 			lenlen = 0
@@ -277,11 +279,11 @@ if len(sys.argv) == 3:
 			addstr = (' '*(lenlen * 2))
 
 			for line in ffe:
-				print (line+addstr)[0:linemax] + (' '*3) + (line.split('/')[-1])
+				print((line+addstr)[0:linemax] + (' '*3) + (line.split('/')[-1]))
 				# print ''
-			print '\n'*2
+			print('\n'*2)
 		else:
-			print 'Your request is refused for the keyword includes some special characters'
+			print('Your request is refused for the keyword includes some special characters')
 		sys.exit()
 if len(sys.argv) == 2:
 	if sys.argv[1] == 'mooo':
@@ -290,11 +292,11 @@ if len(sys.argv) == 2:
 		ddf.sort()
 		for ll in ddf:
 			if len(ll) == 33 and ll[0] == '.':
-				print hp+'/'+ll
+				print(hp+'/'+ll)
 				rmItem(hp+'/'+ll)
 
 	if sys.argv[1] == 'commiting':
-		rest = shell_exec('git add *; git commit -m "fixed"; git push -u origin master;')
+		rest = shell_exec('git add .; git commit -m "fixed"; git push -u origin master;')
 		mKey = ''
 		rest = rest.strip().split('\n')
 		if len(rest) > 0:
@@ -319,22 +321,22 @@ if len(sys.argv) == 2:
 		sys.exit()
 
 	if sys.argv[1] == 'remove_exclude':
-		# python prepare_diff_source.py remove_exclude
+		# python3 .prepare_diff_source.py remove_exclude
 		remove_exclude_items()
 		sys.exit()
 
 if len(sys.argv) == 4:
 	if sys.argv[1] == 'list':
-		print '-' * 80
+		print('-' * 80)
 		if getGithubCredential() == '':
-			print 'You should place .github_api.token to ~/ and put your github api token string into this file'
+			print('You should place .github_api.token to ~/ and put your github api token string into this file')
 		else:
 			dnt = get_commits_list(sys.argv[2], sys.argv[3])
 			cnt = 0
 			for dd in dnt:
-				print ((' '*10)+str(cnt))[-4:] + ' : ' + dd['time'] + ' ' + dd['sha']
+				print(((' '*10)+str(cnt))[-4:] + ' : ' + dd['time'] + ' ' + dd['sha'])
 				cnt+=1
-		print '-' * 80
+		print('-' * 80)
 	sys.exit()
 
 if len(sys.argv) == 2:
@@ -388,9 +390,9 @@ if len(sys.argv) >= 5:
 
 	if cnt < 2:
 		rmItem(compare_dir)
-		print '-'*80
-		print 'Index number of this project is out of range'
-		print '-'*80
+		print('-'*80)
+		print('Index number of this project is out of range')
+		print('-'*80)
 	else:
 		trm = 'trimmed_'
 		compare_two_sources(compare_dir, True)
@@ -405,33 +407,33 @@ if len(sys.argv) >= 5:
 				new_name = 'rawdata_'+no+'_'
 			if old_name and new_name:
 				moveItm(old_name, new_name, compare_dir)
-		print '-'*80
-		print 'Files are downloaded on '+compare_dir+'\n'
+		print('-'*80)
+		print('Files are downloaded on '+compare_dir+'\n')
 		diff_file_count = 0
 		for no in list_files(compare_dir):
 			drnn = compare_dir+no
-			print drnn
+			print(drnn)
 			if no.find(trm) > -1 and is_dir(drnn):
 				diff_file_count += len(list_files(drnn))
-		print '-'*80
+		print('-'*80)
 		if diff_file_count == 0:
-			print '\n'*100
-			print 'NOTHING DIFFERENT'
-			print '\n'*3
+			print('\n'*100)
+			print('NOTHING DIFFERENT')
+			print('\n'*3)
 else:
-	print '-'*80
-	print 'python '+get_script_name()+' github_account_id project_id commit_number commit_number'
-	print ''
-	print 'github_account_id: github account id'
-	print 'project_id: project name'
-	print 'commit_number: if you give 0 then it means the first one of all commits'
-	print 'commit_number: if you give 1 then it means the second one of all commits'
-	print ''
-	print '[Usage]'
-	print '1. place '+get_script_name()+' file on your pc'
-	print '2. turn on terminal app and type below'
-	print '   python '+get_script_name()+' kstost PrepareDiffSource 0 1'
-	print ''
-	print '[How to compare with local]'
-	print '   python '+get_script_name()+' kstost PrepareDiffSource /Users/kstost/Downloads/project 1'
-	print '-'*80
+	print('-'*80)
+	print('python3 '+get_script_name()+' github_account_id project_id commit_number commit_number')
+	print('')
+	print('github_account_id: github account id')
+	print('project_id: project name')
+	print('commit_number: if you give 0 then it means the first one of all commits')
+	print('commit_number: if you give 1 then it means the second one of all commits')
+	print('')
+	print('[Usage]')
+	print('1. place '+get_script_name()+' file on your pc')
+	print('2. turn on terminal app and type below')
+	print('   python3 '+get_script_name()+' kstost PrepareDiffSource 0 1')
+	print('')
+	print('[How to compare with local]')
+	print('   python3 '+get_script_name()+' kstost PrepareDiffSource /Users/kstost/Downloads/project 1')
+	print('-'*80)

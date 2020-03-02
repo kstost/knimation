@@ -1,0 +1,21 @@
+[커밋 리스트 보기]
+source .list.sh
+
+[모든 변경사항 커밋하기]
+source .upload.sh
+
+[현재 로컬파일들이랑 커밋한거 첫번째랑 비교하기]
+source .x_check.sh
+
+[현재 로컬파일들이랑 커밋한거랑 비교하기]
+source .compare_current.sh 0 # 0 이라고 하면 커밋한거중 가장 첫번째꺼
+
+[커밋한거끼리 비교하기]
+python3 .prepare_diff_source.py owner reponame 1 3 # 두번째랑 네번째꺼 비교하기
+
+[제거하기]
+git rm file
+
+[2to3]
+/Library/Developer/CommandLineTools/usr/bin/2to3
+

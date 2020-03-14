@@ -27,20 +27,57 @@ def pull_and_get_commithashes(path_, github_id, project_id): #qq
 		ddd = shell_exec(code).split('\n')
 	return ddd
 
+def is_windows():
+	return is_dir('/mnt/c/Windows') and is_dir('/mnt/c/Users')
+
+def account_list():
+	nst = []
+	userdir = '/mnt/c/Users/'
+	if is_windows() and is_dir(userdir):
+		lst = list_files(userdir)
+		for ss in lst:
+			if not (ss == 'All Users' or ss == 'Default' or ss == 'Default User' or ss == 'Public' or ss == 'desktop.ini'):
+				if is_dir(userdir + ss):
+					nst.append(userdir + ss)
+	return nst
+
 def getHomePath(): #qq
-	return shell_exec('cd ~;pwd').strip()
+	if is_windows():
+		lst = account_list()
+		acc = ''
+		if len(lst) > 0:
+			acc = lst[0]
+		return acc # '/mnt/c/Users/kst_'
+	else:
+		return shell_exec('cd ~;pwd').strip()
 
 def rmItem(path): #qq
 	if is_safe_name(path):
 		shell_exec('rm -rf "'+path+'"')
 
 def genRandom(): #qq
-	return shell_exec("openssl rand -base64 32 | md5").strip()
+	dfg = shell_exec("openssl rand -base64 32 | md5").strip()
+	dfg = dfg[0:32]
+	return dfg
 
 def list_files(compare_dir): #qq
 	ddd = []
 	if is_safe_name(compare_dir):
-		ddd = shell_exec('ls "'+compare_dir+'"').strip().split('\n')
+		ddd = shell_exec('ls -1 "'+compare_dir+'"').strip().split('\n')
+	if len(ddd) == 1 and ddd[0] == '':
+		return []
+	return ddd
+
+def list_files_x(compare_dir): #qq
+	ddd = []
+	if is_safe_name(compare_dir):
+		ddd = shell_exec('ls -a1 "'+compare_dir+'"').strip().split('\n')
+		ndd = []
+		for aa in ddd:
+			aa = aa.strip()
+			if not (aa == '' or aa == '.' or aa == '..'):
+				ndd.append(aa)
+		ddd = ndd
 	if len(ddd) == 1 and ddd[0] == '':
 		return []
 	return ddd
@@ -153,7 +190,7 @@ def getGithubCredential():
 	else:
 		return ''
 def getExclude():
-	path = './.exclude.json'
+	path = './exclude.json'
 	if is_file(path):
 		return json.loads(shell_exec('cat "'+path+'"').strip())
 	else:
@@ -185,7 +222,7 @@ def get_project_id(): #OKK
 	return project_id
 
 def get_garc_path(): #OKK
-	ppp = (shell_exec('cd ..; pwd').strip()) + '/.git_archives'
+	ppp = getHomePath() + '/.git_archives'
 	genPath(ppp)
 	return ppp
 
@@ -286,6 +323,12 @@ if len(sys.argv) == 3:
 			print('Your request is refused for the keyword includes some special characters')
 		sys.exit()
 if len(sys.argv) == 2:
+	if sys.argv[1] == 'test':
+		print(list_files('/mnt/c/Users/'))
+		print(genRandom())
+		print(is_windows())
+		print(getHomePath())
+
 	if sys.argv[1] == 'mooo':
 		hp = getHomePath()
 		ddf = shell_exec('ls -a1 '+hp).split('\n')
@@ -308,10 +351,11 @@ if len(sys.argv) == 2:
 				mKey = masterkey[1].strip()
 		if len(mKey) == 7:
 			#OKK
+			print("mKey:" + str(mKey))
 			project_id = get_project_id()
 			path_ = getHomePath()+'/.'+genRandom()+'/'
 			genPath(path_)
-			code_ = shell_exec('cd ..; pwd').strip()+'/'+project_id
+			code_ = getHomePath()+'/'+project_id
 			if is_dir(path_) and is_dir(code_):
 				copy_itm(code_, path_, True)
 			if is_dir(path_+project_id):
